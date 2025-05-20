@@ -1,0 +1,52 @@
+# Cocos Creator 3.x Ignore File
+
+# Logs and user-specific settings
+local/
+log/
+*.log
+*.tmp
+
+# Build outputs
+build/
+
+# Cache and generated files
+temp/
+library/
+*.config.json
+*.import
+
+# OS generated files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Node modules (if using npm packages)
+node_modules/
+
+# VSCode settings
+.vscode/
+
+# MacOS files
+Icon?
+
+# Android build
+*.apk
+*.aab
+.gradle/
+*.iml
+.idea/
+build.gradle
+local.properties
+
+# iOS build
+*.xcworkspace
+*.xcodeproj
+*.xcuserdata
+*.xcuserstate
+Pods/
+Podfile.lock
+
+# Misc
+*.bak
+*.tmp
+*.swp
