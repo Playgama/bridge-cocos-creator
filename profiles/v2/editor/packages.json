@@ -1,0 +1,20 @@
+{
+  "disable-packages": {
+    "/Users/davidsedrakyan/CocosProjects/playgama-integration-test/extensions/playgama-bridge-sdk": {
+      "name": "playgama-bridge-sdk",
+      "time": 1747139759365
+    },
+    "/Users/davidsedrakyan/CocosProjects/playgama-integration-test/extensions/my-build-plugin": {
+      "name": "my-build-plugin",
+      "time": 1747754506763
+    },
+    "/Users/davidsedrakyan/CocosProjects/playgama-integration-test/extensions/build-done-notifier": {
+      "name": "build-done-notifier",
+      "time": 1747754508882
+    },
+    "/Users/davidsedrakyan/CocosProjects/playgama-integration-test/extensions/playgama-bridge-installer": {
+      "name": "playgama-bridge-installer",
+      "time": 1747758155583
+    }
+  }
+}

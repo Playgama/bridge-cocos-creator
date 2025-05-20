@@ -1,0 +1,9 @@
+{
+    "name": "playgama-bridge-installer",
+    "version": "1.0.0",
+    "description": "Automatically copies Playgama bridge files after web-mobile build.",
+    "author": "Playgama Team",
+    "contributions": {
+      "builder": "./builder.js"
+    }
+  }

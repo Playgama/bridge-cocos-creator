@@ -1,0 +1,42 @@
+{
+  "__version__": "3.0.7",
+  "builder": {
+    "options": {
+      "web-desktop": {
+        "configID": "e3abfd",
+        "services": []
+      },
+      "web-mobile": {
+        "configID": "e3abfd",
+        "services": []
+      }
+    },
+    "taskOptionsMap": {
+      "1747057074718": {
+        "configID": "e3abfd",
+        "services": []
+      },
+      "1747057673922": {
+        "configID": "e3abfd",
+        "services": [],
+        "__version__": "3.0.7"
+      },
+      "1747058017409": {
+        "configID": "e3abfd",
+        "services": [],
+        "__version__": "3.0.7"
+      },
+      "1747140376202": {
+        "configID": "e3abfd",
+        "services": [],
+        "__version__": "3.0.7"
+      }
+    },
+    "__version__": "1.3.7"
+  },
+  "builder-options": {
+    "configID": "e3abfd",
+    "services": [],
+    "__version__": "3.0.7"
+  }
+}

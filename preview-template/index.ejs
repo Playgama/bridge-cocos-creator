@@ -1,0 +1,117 @@
+<html>
+    <head>
+        <link rel="icon" href="./favicon.ico" />
+        <meta charset="utf-8" />
+        <title><%=title%></title>
+        <style>
+          html, body {
+              width: 100%;
+              height: 100%;
+              padding: 0px;
+              margin: 0px;
+          }
+          .fullscreen {
+              background: #242424;
+              width: 100%;
+              height: 100%;
+              position: absolute;
+              top: 0px;
+              left: 0px;
+          }
+          #loading-overlay {
+              font-size: 20px;
+              z-index: 1;
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              align-items: center;
+          }
+          #icon {
+              max-width: 100px;
+              border-radius: 10px;
+              margin-bottom: 20px;
+          }
+          #progress-bar {
+              border-radius: 5px;
+              width: 90%;
+              max-width: 250px;
+              height: 20px;
+              background: #181818;
+              padding: 5px;
+          }
+          #progress-bar-fill {
+              border-radius: 3px;
+              width: 0%;
+              height: 100%;
+              background: #9747FF;
+          }
+      </style>
+        <meta
+            name="viewport"
+            content="width=device-width,user-scalable=no,initial-scale=1,minimum-scale=1,maximum-scale=1,minimal-ui=true"
+        />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="full-screen" content="yes" />
+        <meta name="screen-orientation" content="portrait" />
+        <meta name="x5-fullscreen" content="true" />
+        <meta name="360-fullscreen" content="true" />
+        <meta name="renderer" content="webkit" />
+        <meta name="force-rendering" content="webkit" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+
+        <!-- <script src="//game-cdn.poki.com/scripts/v2/poki-sdk.js"></script> -->
+  
+
+        <script src="./playgama-bridge.js"></script>
+
+        <link rel="stylesheet" type="text/css" href="./index.css" />
+    </head>
+    <body>
+      <canvas id="canvas" class="fullscreen"></canvas>
+      <!-- <div id="loading-overlay" class="fullscreen">
+          <img id="icon" src="./icon.png" />
+          <div id="progress-bar"><div id="progress-bar-fill"></div></div>
+      </div> -->
+      <script>
+        if (typeof bridge !== 'undefined') {
+          bridge.initialize()
+            .then(() => {
+              console.log('Initialization completed');
+              console.log('Language: ', bridge.platform.language);
+              console.log('Platform version: ', bridge.platform.id);
+            })
+            .catch(() => {
+              console.log('Bridge initialized, but the user likely has adblock or an issue occurred');
+            });
+        } else {
+          console.error('bridge is not defined – script may have failed to load or is blocked.');
+        }
+      </script>
+
+
+        <%- include(cocosToolBar, {config: config}) %>
+        <div id="content" class="content">
+            <div class="contentWrap">
+                <div id="GameDiv" class="wrapper">
+                    <div id="Cocos3dGameContainer">
+                        <canvas id="GameCanvas"></canvas>
+                    </div>
+                    <div id="splash">
+                        <div class="progress-bar stripes"><span></span></div>
+                    </div>
+                    <div id="bulletin">
+                        <div id="sceneIsEmpty" class="inner"><%=tip_sceneIsEmpty%></div>
+                    </div>
+                    <div class="error" id="error" style="display:none">
+                        <div class="title">Error <i>(Please open the console to see detailed errors)</i></div>
+                        <div class="error-main"></div>
+                    </div>
+                </div>
+            </div>
+            <p class="footer">
+                Created with <a href="https://www.cocos.com/products" target="_blank" title="Cocos Creator">Cocos Creator</a>
+            </p>
+        </div>
+        <%- include(cocosTemplate, {}) %>
+    </body>
+</html>

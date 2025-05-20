@@ -1,0 +1,51 @@
+{
+  "__version__": "1.0.1",
+  "builder": {
+    "common": {
+      "polyfills": {
+        "asyncFunctions": true
+      },
+      "buildPath": "project://build",
+      "outputName": "web-mobile",
+      "mainBundleCompressionType": "merge_dep",
+      "platform": "web-mobile",
+      "useSplashScreen": false,
+      "buildMode": "normal"
+    },
+    "taskOptionsMap": {
+      "1747057074718": {
+        "orientation": "auto",
+        "embedWebDebugger": false,
+        "cullEngineAsmJsModule": false,
+        "__version__": "1.0.1"
+      },
+      "1747057673922": {
+        "orientation": "auto",
+        "embedWebDebugger": false,
+        "cullEngineAsmJsModule": false,
+        "__version__": "1.0.1"
+      },
+      "1747058017409": {
+        "orientation": "auto",
+        "embedWebDebugger": false,
+        "cullEngineAsmJsModule": true,
+        "__version__": "1.0.1"
+      },
+      "1747140376202": {
+        "orientation": "auto",
+        "embedWebDebugger": false,
+        "cullEngineAsmJsModule": true,
+        "__version__": "1.0.1"
+      }
+    },
+    "__version__": "1.3.7",
+    "options": {
+      "web-mobile": {
+        "orientation": "auto",
+        "embedWebDebugger": false,
+        "cullEngineAsmJsModule": true,
+        "__version__": "1.0.1"
+      }
+    }
+  }
+}

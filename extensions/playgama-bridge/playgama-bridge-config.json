@@ -1,0 +1,49 @@
+{
+    "platforms": {
+        "game_distribution": {
+            "gameId": ""
+        },
+        "telegram": {
+            "adsgramBlockId": ""
+        },
+        "y8": {
+            "gameId": "",
+            "adsenseId": "",
+            "channelId": ""
+        },
+        "lagged": {
+            "devId": "",
+            "publisherId": ""
+        },
+        "facebook": {
+            "bannerPlacementId": "",
+            "interstitialPlacements": [],
+            "rewardedPlacements": []
+        }
+    },
+    "payments": [
+        {
+            "commonId": "hard1",
+            "yandex": {
+                "id": "hard1"
+            },
+            "facebook": {
+                "productID": "hard1"
+            },
+            "msn": {
+                "productId": "hard1"
+            },
+            "playgama": {
+                "amount": 100
+            },
+            "qa_tool": {
+                "id": "hard1",
+                "amount": 100
+            },
+            "playdeck": {
+                "amount": 100,
+                "description": "hard1"
+            }
+        }
+    ]
+}
