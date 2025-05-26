@@ -16,17 +16,30 @@ export class Initialization extends Component {
         console.log('Device' + bridge.device.type);
         console.log('Payments' + bridge.payments.isSupported);
       
-        bridge.payments.getPurchases().then(result => {
-            console.log("Purchases are = " + result)
+        bridge.payments.getPurchases()
+        .then(result => {
+            console.log("Purchases are = " + result);
+        })
+        .catch(error => {
+            console.error("Error getting purchases:", error);
         });
-
-        bridge.payments.getCatalog().then(result => {
-            console.log("Catalog is = " + result)
+    
+    bridge.payments.getCatalog()
+        .then(result => {
+            console.log("Catalog is = " + result);
+        })
+        .catch(error => {
+            console.error("Error getting catalog:", error);
         });
-       
-        bridge.platform.getServerTime().then(result => {
-            console.log("Server time is = " + result)
+    
+    bridge.platform.getServerTime()
+        .then(result => {
+            console.log("Server time is = " + result);
+        })
+        .catch(error => {
+            console.error("Error getting server time:", error);
         });
+    
     }
 }
 
