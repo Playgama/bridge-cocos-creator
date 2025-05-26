@@ -1,17 +1,17 @@
 const fs = require('fs');
 const path = require('path');
 
-const PACKAGE_NAME = 'playgama-bridge-installer';
+const PACKAGE_NAME = 'playgama-bridge';
 
 module.exports = {
   load() {
     console.log(`[${PACKAGE_NAME}] Extension loaded`);
-  
+
     const projectRoot = Editor.Project.path;
     const markerFile = path.join(projectRoot, '.playgama-bridge-installed');
-  
+
     if (!fs.existsSync(markerFile)) {
-      module.exports.methods.onInstall(); // ✅ Directly access methods
+      module.exports.methods.onInstall(); // ✅ Auto install on first load
       fs.writeFileSync(markerFile, 'installed');
       console.log(`[${PACKAGE_NAME}] Auto-installed on first load`);
     }
@@ -68,7 +68,7 @@ module.exports = {
       }
 
       try {
-        // First, copy the demo folder to assets/demo
+        // Copy demo to assets/demo
         if (fs.existsSync(demoSrc)) {
           copyDir(demoSrc, demoDest);
           console.log(`[${PACKAGE_NAME}] Copied demo to assets/demo`);
@@ -76,9 +76,9 @@ module.exports = {
           console.warn(`[${PACKAGE_NAME}] demo folder not found in templates`);
         }
 
-        // Then copy all other contents in templates (except demo) to project root
+        // Copy all other templates (except demo) to project root
         fs.readdirSync(templatesDir).forEach(item => {
-          if (item === 'demo') return; // skip demo
+          if (item === 'demo') return;
           const srcPath = path.join(templatesDir, item);
           const destPath = path.join(projectRoot, item);
           const stat = fs.statSync(srcPath);
@@ -88,6 +88,17 @@ module.exports = {
             fs.copyFileSync(srcPath, destPath);
           }
         });
+
+        // ✅ Copy playgama-bridge.js into the copied preview-template
+        const bridgeFileSrc = path.join(extDir, 'playgama-bridge.js');
+        const previewTemplateDest = path.join(projectRoot, 'preview-template', 'playgama-bridge.js');
+
+        if (fs.existsSync(bridgeFileSrc)) {
+          fs.copyFileSync(bridgeFileSrc, previewTemplateDest);
+          console.log(`[${PACKAGE_NAME}] Copied playgama-bridge.js into preview-template`);
+        } else {
+          console.warn(`[${PACKAGE_NAME}] playgama-bridge.js not found at root`);
+        }
 
         console.log(`[${PACKAGE_NAME}] Templates installed successfully`);
       } catch (err) {
