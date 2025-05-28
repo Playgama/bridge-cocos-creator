@@ -66,6 +66,7 @@ export enum PLATFORM_MESSAGE {
     PLAYER_GOT_ACHIEVEMENT = 'player_got_achievement',
 }
 
+
 export enum ACTION_NAME {
     INITIALIZE = 'initialize',
     AUTHORIZE_PLAYER = 'authorize_player',
@@ -138,6 +139,8 @@ export interface AdvertisementModule extends ModuleBase {
     showInterstitial(): void;
 
     showRewarded(): void;
+
+    checkAdBlock(): Promise<boolean>;
 
     on(event: string, listener: (...args: any[]) => void): this;
 
@@ -231,6 +234,7 @@ export interface PlatformModule extends ModuleBase {
     isGetGameByIdSupported: boolean;
 
     sendMessage(message: string): any | Promise<any>;
+    sendMessage(message: PLATFORM_MESSAGE): Promise<any>;
 
     getServerTime(): Promise<number>;
 
@@ -300,4 +304,5 @@ export interface PlaygamaBridge {
 
 declare global {
     var bridge: PlaygamaBridge;
+    var platformMessage: PLATFORM_MESSAGE;
 }
