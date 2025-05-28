@@ -183,7 +183,7 @@ export interface StorageModule extends ModuleBase {
 
     set(key: string|string[], value: any, options?: any): any;
 
-    delete(key: string, options: any): any;
+    delete(key: string|string[], options?: any): any;
 }
 
 export interface SocialModule extends ModuleBase {
@@ -196,7 +196,7 @@ export interface SocialModule extends ModuleBase {
     isRateSupported: boolean;
     isExternalLinksAllowed: boolean;
 
-    inviteFriends(): any | Promise<never>;
+    inviteFriends(options?: any): any | Promise<never>;
 
     joinCommunity(options: any): any | Promise<never>;
 

@@ -1,5 +1,5 @@
 import { _decorator, Component, EditBox, Node, RichText } from 'cc';
-import { BANNER_STATE, INTERSTITIAL_STATE, REWARDED_STATE } from '../../extensions/playgama-bridge/PlaygamaBridge';
+import { BANNER_STATE, INTERSTITIAL_STATE, REWARDED_STATE, STORAGE_TYPE } from '../../extensions/playgama-bridge/PlaygamaBridge.ts';
 const { ccclass, property } = _decorator;
 
 @ccclass('Example')
@@ -55,6 +55,61 @@ export class Example extends Component {
      @property(RichText)
     adBlockDetectedText: RichText;
 
+    @property(RichText)
+    defaultTypeText: RichText;
+    @property(RichText)
+    isLocalStorageSupportedText: RichText;
+    @property(RichText)
+    isPlatformInternalSupportedText: RichText;
+    @property(RichText)
+    isLocalStorageAvailableText: RichText;
+    @property(RichText)
+    isPlatformInternalAvailableText: RichText;
+    @property(EditBox)
+    coinsInputField: EditBox;
+    @property(EditBox)
+    levelInputField: EditBox;
+
+    private readonly coinsKey = "coins";
+    private readonly levelKey = "level";
+    
+
+    @property(RichText)
+    isShareSupported: RichText;
+    @property(RichText)
+    isInviteFriendsSupported: RichText;
+    @property(RichText)
+    isJoinCommunitySupported: RichText;
+    @property(RichText)
+    isCreatePostSupported: RichText;
+    @property(RichText)
+    isAddToHomeScreenSupported: RichText;
+    @property(RichText)
+    isAddToFavoritesSupported: RichText;
+    @property(RichText)
+    isRateSupported: RichText;
+    @property(RichText)
+    isExternalLinksAllowed: RichText;
+
+    @property(RichText)
+    isLeaderboardSupported: RichText;
+    @property(RichText)
+    isNativePopupSupported: RichText;
+    @property(RichText)
+    isSetScoreSupported: RichText;
+    @property(RichText)
+    isGetScoreSupported: RichText;
+    @property(RichText)
+    isGetEntriesSupported: RichText;
+
+    @property(RichText)
+    isPaymentsSupported: RichText;
+    
+    
+
+
+
+
     start() {
 
         bridge.advertisement.on('bannerStateChanged', this.onBannerStateChanged.bind(this));
@@ -79,6 +134,34 @@ export class Example extends Component {
         this.deviceType.string = 'Device type: ' + bridge.device.type;
 
         this.isBannerSupported.string = 'Is banner supported: ' + bridge.advertisement.isBannerSupported;
+
+        this.defaultTypeText.string = 'Default type: ' + bridge.storage.defaultType;
+
+        console.log('Local = ', STORAGE_TYPE.LOCAL_STORAGE);
+        console.log('Platform internal = ', STORAGE_TYPE.PLATFORM_INTERNAL);
+
+        this.isLocalStorageSupportedText.string = 'Is local storage supported: ' + bridge.storage.isSupported(STORAGE_TYPE.LOCAL_STORAGE);
+        this.isPlatformInternalSupportedText.string = 'Is platform internal supported: ' + bridge.storage.isSupported(STORAGE_TYPE.PLATFORM_INTERNAL);
+        this.isLocalStorageAvailableText.string = 'Is local storage available: ' + bridge.storage.isAvailable(STORAGE_TYPE.LOCAL_STORAGE);
+        this.isPlatformInternalAvailableText.string = 'Is platform internal available: ' + bridge.storage.isAvailable(STORAGE_TYPE.PLATFORM_INTERNAL);
+    
+        this.isShareSupported.string = 'Is share supported: ' + bridge.social.isShareSupported;
+        this.isInviteFriendsSupported.string = 'Is invite friends supported: ' + bridge.social.isInviteFriendsSupported;
+        this.isJoinCommunitySupported.string = 'Is join community supported: ' + bridge.social.isJoinCommunitySupported;
+        this.isCreatePostSupported.string = 'Is create post supported: ' + bridge.social.isCreatePostSupported;
+        this.isAddToHomeScreenSupported.string = 'Is add to home screen supported: ' + bridge.social.isAddToHomeScreenSupported;
+        this.isAddToFavoritesSupported.string = 'Is add to favorites supported: ' + bridge.social.isAddToFavoritesSupported;
+        this.isRateSupported.string = 'Is rate supported: ' + bridge.social.isRateSupported;
+        this.isExternalLinksAllowed.string = 'Is external links allowed: ' + bridge.social.isExternalLinksAllowed;
+
+        this.isLeaderboardSupported.string = 'Is leaderboard supported: ' + bridge.leaderboard.isSupported;
+        this.isNativePopupSupported.string = 'Is native popup supported: ' + bridge.leaderboard.isNativePopupSupported;
+        this.isSetScoreSupported.string = 'Is set score supported: ' + bridge.leaderboard.isSetScoreSupported;
+        this.isGetScoreSupported.string = 'Is get score supported: ' + bridge.leaderboard.isGetScoreSupported;
+        this.isGetEntriesSupported.string = 'Is get entries supported: ' + bridge.leaderboard.isGetEntriesSupported;
+
+        this.isPaymentsSupported.string = 'Is payments supported: ' + bridge.payments.isSupported;
+
     }
 
     sendGameReadyMessage() {
@@ -303,4 +386,326 @@ export class Example extends Component {
             console.error("Failed to check AdBlock:", error);
         }
     }
+
+    async onSetStorageDataButtonClicked() {
+    
+        const coins = parseInt(this.coinsInputField.string) || 0;
+        const level = this.levelInputField.string;
+    
+        try {
+            await bridge.storage.set(
+                [this.coinsKey, this.levelKey],
+                [coins, level]
+            );
+        } catch (error) {
+            console.error("Failed to set storage data:", error);
+        }
+    
+    }
+
+    async onGetStorageDataButtonClicked() {
+        
+    
+        const keys = [this.coinsKey, this.levelKey];
+    
+        try {
+            const data = await bridge.storage.get(keys);
+    
+            const coins = parseInt(data[0]) || 0;
+            this.coinsInputField.string = coins.toString();
+    
+            this.levelInputField.string = data[1] ?? "default_level";
+        } catch (error) {
+            console.error("Failed to get storage data:", error);
+            this.coinsInputField.string = "0";
+            this.levelInputField.string = "default_level";
+        }
+    
+    }
+
+    async onDeleteStorageDataButtonClicked() {
+    
+        const keys = [this.coinsKey, this.levelKey];
+    
+        try {
+            await bridge.storage.delete(keys);
+        } catch (error) {
+            console.error("Failed to delete storage data:", error);
+        }
+    
+        this.coinsInputField.string = '';
+        this.levelInputField.string = '';
+    }
+
+    async onShareButtonClicked() {
+       
+    
+        const options: Record<string, any> = {};
+        if (bridge.platform.id === "vk") {
+            options.link = "YOUR_LINK";
+        }
+    
+        try {
+            await bridge.social.share(options);
+        } catch (error) {
+            console.error("Share failed:", error);
+        }
+    
+        
+    }
+    
+    async onInviteFriendsButtonClicked() {
+      
+    
+        const options: Record<string, any> = {};
+        if (bridge.platform.id === "ok") {
+            options.text = "Hello World!";
+        }
+    
+        try {
+            await bridge.social.inviteFriends(options);
+        } catch (error) {
+            console.error("Invite friends failed:", error);
+        }
+    
+       
+    }
+    
+    async onJoinCommunityButtonClicked() {
+       
+    
+        const options: Record<string, any> = {};
+        if (bridge.platform.id === "vk") {
+            options.groupId = 199747461;
+        } else if (bridge.platform.id === "ok") {
+            options.groupId = 62984239710374;
+        }
+    
+        try {
+            await bridge.social.joinCommunity(options);
+        } catch (error) {
+            console.error("Join community failed:", error);
+        }
+    
+        
+    }
+    
+    async onAddToFavoritesButtonClicked() {
+      
+    
+        try {
+            await bridge.social.addToFavorites();
+        } catch (error) {
+            console.error("Add to favorites failed:", error);
+        }
+    
+       
+    }
+    
+    async onAddToHomeScreenButtonClicked() {
+      
+    
+        try {
+            await bridge.social.addToHomeScreen();
+        } catch (error) {
+            console.error("Add to home screen failed:", error);
+        }
+    
+    
+    }
+    
+    async onCreatePostButtonClicked() {
+    
+        const options: Record<string, any> = {};
+    
+        if (bridge.platform.id === "vk") {
+            options.message = "Hello World!";
+            options.attachments = "photo-199747461_457239629";
+        } else if (bridge.platform.id === "ok") {
+            options.media = [
+                {
+                    type: "text",
+                    text: "Hello World!",
+                },
+                {
+                    type: "link",
+                    url: "https://apiok.ru",
+                },
+                {
+                    type: "poll",
+                    question: "Do you like our API?",
+                    answers: [
+                        { text: "Yes" },
+                        { text: "No" },
+                    ],
+                    options: "SingleChoice,AnonymousVoting",
+                },
+            ];
+        }
+    
+        try {
+            await bridge.social.createPost(options);
+        } catch (error) {
+            console.error("Create post failed:", error);
+        }
+    
+    
+    }
+    
+    async onRateButtonClicked() {
+        try {
+            await bridge.social.rate();
+        } catch (error) {
+            console.error("Rate failed:", error);
+        }
+    }
+
+    onShowNativePopupButtonClicked() {
+        const options: Record<string, any> = {};
+        if (bridge.platform.id === "vk") {
+            options.userResult = 42;
+            options.global = true;
+        }
+    
+        bridge.leaderboard.showNativePopup(options)
+            .then(() => {
+                
+            })
+            .catch(error => {
+                console.error("Show native popup failed:", error);
+                
+            });
+    }
+
+    onSetScoreButtonClicked() {
+    
+        const options: Record<string, any> = {};
+        if (bridge.platform.id === "yandex") {
+            options.score = 42;
+            options.leaderboardName = "YOUR_LEADERBOARD_NAME";
+        }
+    
+        bridge.leaderboard.setScore(options)
+            .then(() => {
+           
+            })
+            .catch(error => {
+                console.error("Set score failed:", error);
+            });
+            
+    }
+
+    onGetScoreButtonClicked() {
+    
+        const options: Record<string, any> = {};
+        if (bridge.platform.id === "yandex") {
+            options.leaderboardName = "YOUR_LEADERBOARD_NAME";
+        }
+    
+        bridge.leaderboard.getScore(options)
+            .then(score => {
+                console.log(`OnGetScoreCompleted, success: true, score: ${score}`);
+            })
+            .catch(error => {
+                console.error("Get score failed:", error);
+            });
+    }
+    
+    onGetEntriesButtonClicked() {
+    
+        const options: Record<string, any> = {};
+        if (bridge.platform.id === "yandex") {
+            options.leaderboardName = "YOUR_LEADERBOARD_NAME";
+            options.includeUser = true;
+            options.quantityAround = 10;
+            options.quantityTop = 10;
+        }
+    
+        bridge.leaderboard.getEntries(options)
+            .then(entries => {
+                console.log(`OnGetEntriesCompleted, success: true, entries:`);
+    
+                if (bridge.platform.id === "yandex") {
+                    for (const entry of entries) {
+                        console.log("ID:", entry["id"]);
+                        console.log("Score:", entry["score"]);
+                        console.log("Rank:", entry["rank"]);
+                        console.log("Name:", entry["name"]);
+                        console.log("Photo:", entry["photo"]);
+                    }
+                }
+    
+            })
+            .catch(error => {
+                console.error("Get entries failed:", error);
+            });
+    }
+
+    onGetCatalogButtonClicked() {
+    
+        bridge.payments.getCatalog()
+            .then((list: any[]) => {
+                console.log("OnGetCatalogCompleted, success: true, items:");
+                for (const item of list) {
+                    console.log("Common ID:", item["commonId"]);
+                    console.log("Price:", item["price"]);
+                    console.log("Price Currency Code:", item["priceCurrencyCode"]);
+                    console.log("Price Value:", item["priceValue"]);
+                }
+            })
+            .catch(error => {
+                console.error("OnGetCatalogCompleted, success: false", error);
+            })
+            .then(() => {
+
+            });
+    }
+
+    onGetPurchasesButtonClicked() {
+
+        bridge.payments.getPurchases()
+            .then((list: any[]) => {
+                console.log("OnGetPurchasesCompleted, success: true, items:");
+                for (const purchase of list) {
+                    console.log("Common ID:", purchase["commonId"]);
+                }
+            })
+            .catch(error => {
+                console.error("OnGetPurchasesCompleted, success: false", error);
+            })
+            .then(() => {
+              
+            });
+    }
+    
+    onPurchaseButtonClicked() {
+    
+        bridge.payments.purchase("test_product")
+            .then(() => {
+                console.log("OnPurchaseCompleted, success: true");
+            })
+            .catch(error => {
+                console.error("OnPurchaseCompleted, success: false", error);
+            })
+            .then(() => {
+              
+            });
+    }
+
+    onConsumePurchaseButtonClicked() {
+        
+        bridge.payments.consumePurchase("test_product")
+            .then(() => {
+                console.log("OnConsumePurchaseCompleted, success: true");
+            })
+            .catch(error => {
+                console.error("OnConsumePurchaseCompleted, success: false", error);
+            })
+            .then(() => {
+              
+            });
+    }
+
+    
+    
 }
