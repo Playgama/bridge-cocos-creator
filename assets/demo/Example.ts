@@ -1,5 +1,5 @@
 import { _decorator, Component, EditBox, Node, RichText } from 'cc';
-import { BANNER_STATE, INTERSTITIAL_STATE, REWARDED_STATE, STORAGE_TYPE } from '../../extensions/playgama-bridge/PlaygamaBridge.ts';
+import { BANNER_STATE, INTERSTITIAL_STATE, REWARDED_STATE, STORAGE_TYPE, PLATFORM_MESSAGE, ACTION_NAME } from '../../extensions/playgama-bridge/PlaygamaBridge.ts';
 const { ccclass, property } = _decorator;
 
 @ccclass('Example')
@@ -104,7 +104,22 @@ export class Example extends Component {
 
     @property(RichText)
     isPaymentsSupported: RichText;
-    
+
+    @property(RichText)
+    isRemoteConfigSupported: RichText;
+
+
+    @property(RichText)
+    isAchievementSupported: RichText;
+    @property(RichText)
+    isAchievementGetListSupported: RichText;
+    @property(RichText)
+    isAchievementNativePopupSupported: RichText;
+
+    @property(EditBox)
+    achievementIdInputField: EditBox;
+    @property(EditBox)
+    achievementNameInputField: EditBox;
     
 
 
@@ -162,25 +177,31 @@ export class Example extends Component {
 
         this.isPaymentsSupported.string = 'Is payments supported: ' + bridge.payments.isSupported;
 
+        this.isRemoteConfigSupported.string = 'Is remote config supported: ' + bridge.remoteConfig.isSupported;
+
+        this.isAchievementSupported.string = 'Is achievement supported: ' + bridge.achievements.isSupported;
+        this.isAchievementNativePopupSupported.string = 'Is achievement native popup supported: ' + bridge.achievements.isNativePopupSupported;
+        this.isAchievementGetListSupported.string = 'Is achievement get list supported: ' + bridge.achievements.isGetListSupported;
+
     }
 
     sendGameReadyMessage() {
-        // bridge.platform.sendMessage(bridge.platform)
-        //     .then(() => {
-        //         console.log("Game ready message sent.");
-        //     })
-        //     .catch((error) => {
-        //         console.error("Failed to send game ready message:", error);
-        //     });
-
-
-        bridge.platform.sendMessage('game_ready')
+        bridge.platform.sendMessage(PLATFORM_MESSAGE.GAME_READY)
             .then(() => {
                 console.log("Game ready message sent.");
             })
             .catch((error) => {
                 console.error("Failed to send game ready message:", error);
             });
+
+
+        // bridge.platform.sendMessage('game_ready')
+        //     .then(() => {
+        //         console.log("Game ready message sent.");
+        //     })
+        //     .catch((error) => {
+        //         console.error("Failed to send game ready message:", error);
+        //     });
         
     }
 
@@ -703,6 +724,101 @@ export class Example extends Component {
             })
             .then(() => {
               
+            });
+    }
+
+    onGetRemoteConfigButtonClicked() {
+        const options: Record<string, any> = {};
+    
+        if (bridge.platform.id === "yandex") {
+            options.clientFeatures = [
+                {
+                    name: "levels",
+                    value: "5",
+                },
+            ];
+        }
+    
+        bridge.remoteConfig.get(options)
+            .then((values: Record<string, string>) => {
+                console.log("OnRemoteConfigGetCompleted, success: true, items:");
+                for (const key in values) {
+                    if (Object.prototype.hasOwnProperty.call(values, key)) {
+                        console.log(`key: ${key}, value: ${values[key]}`);
+                    }
+                }
+            })
+            .catch(error => {
+                console.error("OnRemoteConfigGetCompleted, success: false", error);
+            });
+    }
+
+    onUnlockButtonClicked() {
+    
+        const options: Record<string, any> = {};
+        switch (bridge.platform.id) {
+            case "y8":
+                options.achievement = "YOUR_ACHIEVEMENT_NAME";
+                options.achievementkey = "YOUR_ACHIEVEMENT_KEY";
+                break;
+            case "lagged":
+                options.achievement = "YOUR_ACHIEVEMENT_ID";
+                break;
+        }
+    
+        bridge.achievements.unlock(options)
+            .then(() => {
+                console.log("OnUnlockCompleted, success: true");
+            })
+            .catch(error => {
+                console.error("OnUnlockCompleted, success: false", error);
+            });
+    }
+
+    onShowAchievementNativePopupButtonClicked() {
+       
+        const options: Record<string, any> = {};
+    
+        bridge.achievements.showNativePopup(options)
+            .then(() => {
+                console.log("OnShowNativePopupCompleted, success: true");
+            })
+            .catch(error => {
+                console.error("OnShowNativePopupCompleted, success: false", error);
+            });
+    }
+
+    onGetListButtonClicked() {
+    
+        const options: Record<string, any> = {};
+    
+        bridge.achievements.getList(options)
+            .then((list: any[]) => {
+                console.log("OnGetListCompleted, success: true, items:");
+    
+                if (bridge.platform.id === "y8") {
+                    for (const item of list) {
+                        console.log("achievementid:", item["achievementid"]);
+                        console.log("achievement:", item["achievement"]);
+                        console.log("achievementkey:", item["achievementkey"]);
+                        console.log("description:", item["description"]);
+                        console.log("icon:", item["icon"]);
+                        console.log("difficulty:", item["difficulty"]);
+                        console.log("secret:", item["secret"]);
+                        console.log("awarded:", item["awarded"]);
+                        console.log("game:", item["game"]);
+                        console.log("link:", item["link"]);
+                        console.log("playerid:", item["playerid"]);
+                        console.log("playername:", item["playername"]);
+                        console.log("lastupdated:", item["lastupdated"]);
+                        console.log("date:", item["date"]);
+                        console.log("rdate:", item["rdate"]);
+                    }
+                }
+            })
+            .catch(error => {
+                console.error("OnGetListCompleted, success: false", error);
+               
             });
     }
 
