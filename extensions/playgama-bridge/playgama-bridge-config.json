@@ -14,35 +14,25 @@
         "lagged": {
             "devId": "",
             "publisherId": ""
+        }
+    },
+    "advertisement": {
+        "interstitial": {
+            "preloadOnStart": true
         },
-        "facebook": {
-            "bannerPlacementId": "",
-            "interstitialPlacements": [],
-            "rewardedPlacements": []
+        "rewarded": {
+            "preloadOnStart": true
         }
     },
     "payments": [
         {
-            "commonId": "hard1",
-            "yandex": {
-                "id": "hard1"
-            },
-            "facebook": {
-                "productID": "hard1"
-            },
-            "msn": {
-                "productId": "hard1"
-            },
+            "id": "test_product",
             "playgama": {
-                "amount": 100
-            },
-            "qa_tool": {
-                "id": "hard1",
-                "amount": 100
+                "amount": 1
             },
             "playdeck": {
-                "amount": 100,
-                "description": "hard1"
+                "amount": 1,
+                "description": "TEST PRODUCT"
             }
         }
     ]

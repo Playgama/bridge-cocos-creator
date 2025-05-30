@@ -1,5 +1,5 @@
 import { _decorator, Component, EditBox, Node, RichText } from 'cc';
-import { VISIBILITY_STATE,BANNER_STATE, INTERSTITIAL_STATE, REWARDED_STATE, STORAGE_TYPE, PLATFORM_MESSAGE, ACTION_NAME, EVENT_NAME } from '../../extensions/playgama-bridge/playgama-bridge.ts';
+import { BANNER_STATE, INTERSTITIAL_STATE, REWARDED_STATE, STORAGE_TYPE, PLATFORM_MESSAGE, ACTION_NAME } from '../../extensions/playgama-bridge/playgama-bridge.ts';
 const { ccclass, property } = _decorator;
 
 @ccclass('Example')
@@ -127,9 +127,9 @@ export class Example extends Component {
 
     start() {
 
-        bridge.advertisement.on(EVENT_NAME.BANNER_STATE_CHANGED, this.onBannerStateChanged.bind(this));
-        bridge.advertisement.on(EVENT_NAME.INTERSTITIAL_STATE_CHANGED, this.onInterstitialStateChanged.bind(this));
-        bridge.advertisement.on(EVENT_NAME.REWARDED_STATE_CHANGED, this.onRewardedStateChanged.bind(this));
+        bridge.advertisement.on('bannerStateChanged', this.onBannerStateChanged.bind(this));
+        bridge.advertisement.on('interstitialStateChanged', this.onInterstitialStateChanged.bind(this));
+        bridge.advertisement.on('rewardedStateChanged', this.onRewardedStateChanged.bind(this));
 
         this.platformIDText.string = 'ID: ' + bridge.platform.id;
         this.languageText.string = 'Language: ' + bridge.platform.language;
@@ -183,8 +183,6 @@ export class Example extends Component {
         this.isAchievementNativePopupSupported.string = 'Is achievement native popup supported: ' + bridge.achievements.isNativePopupSupported;
         this.isAchievementGetListSupported.string = 'Is achievement get list supported: ' + bridge.achievements.isGetListSupported;
 
-        // this.visibilityState.string = 'Visibility state: ' + bridge.game.visibilityState;
-        console.log("Default storage type: ", bridge.storage.defaultType);
     }
 
     sendGameReadyMessage() {
@@ -196,11 +194,19 @@ export class Example extends Component {
                 console.error("Failed to send game ready message:", error);
             });
 
+
+        // bridge.platform.sendMessage('game_ready')
+        //     .then(() => {
+        //         console.log("Game ready message sent.");
+        //     })
+        //     .catch((error) => {
+        //         console.error("Failed to send game ready message:", error);
+        //     });
         
     }
 
     sendInGameLoadingStartedMessage() {
-        bridge.platform.sendMessage(PLATFORM_MESSAGE.IN_GAME_LOADING_STARTED)
+        bridge.platform.sendMessage('in_game_loading_started')
             .then(() => {
                 console.log("In-game loading started message sent.");
             })
@@ -210,7 +216,7 @@ export class Example extends Component {
     }
 
     sendInGameLoadingStoppedMessage() {
-        bridge.platform.sendMessage(PLATFORM_MESSAGE.IN_GAME_LOADING_STOPPED)
+        bridge.platform.sendMessage('in_game_loading_stopped')
             .then(() => {
                 console.log("In-game loading stopped message sent.");
             })
@@ -220,7 +226,7 @@ export class Example extends Component {
     }
 
     sendGameplayStartedMessage() {
-        bridge.platform.sendMessage(PLATFORM_MESSAGE.GAMEPLAY_STARTED)
+        bridge.platform.sendMessage('gameplay_started')
             .then(() => {
                 console.log("Gameplay started message sent.");
             })
@@ -230,7 +236,7 @@ export class Example extends Component {
     }
 
     sendGameplayStoppedMessage() {
-        bridge.platform.sendMessage(PLATFORM_MESSAGE.GAMEPLAY_STOPPED)
+        bridge.platform.sendMessage('gameplay_stopped')
             .then(() => {
                 console.log("Gameplay stopped message sent.");
             })
@@ -240,7 +246,7 @@ export class Example extends Component {
     }
 
     sendPlayerGotAchievementMessage() {
-        bridge.platform.sendMessage(PLATFORM_MESSAGE.PLAYER_GOT_ACHIEVEMENT)
+        bridge.platform.sendMessage('player_got_achievement')
             .then(() => {
                 console.log("Player got achievement message sent.");
             })
@@ -259,11 +265,6 @@ export class Example extends Component {
                 console.error("Failed to get server time:", error);
             });
     }
-
-    onVisibilityStateChanged(state: VISIBILITY_STATE) {
-        console.log("Visibility state changed: ", state);
-    }
-
 
     getAllGames(){
         bridge.platform.getAllGames()
