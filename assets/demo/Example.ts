@@ -40,6 +40,9 @@ export class Example extends Component {
     bannerState: RichText;
 
     private _lastInterstitialStates: INTERSTITIAL_STATE[] = [];
+
+    private rewardedStateNew: REWARDED_STATE;
+
     @property(RichText)
     interstitialState: RichText;
 
@@ -361,6 +364,7 @@ export class Example extends Component {
     }
 
     onInterstitialStateChanged(state: INTERSTITIAL_STATE) {
+        // console.log("Interstitial state: ", state);
         switch (state) {
             case 'loading':
                 break;
@@ -380,6 +384,8 @@ export class Example extends Component {
     }
 
     onRewardedStateChanged(state: REWARDED_STATE) {
+
+        console.log("Rewarded state: ", state);
         switch (state) {
             case 'loading':
                 break;
@@ -457,21 +463,22 @@ export class Example extends Component {
         this.levelInputField.string = '';
     }
 
-    async onShareButtonClicked() {
-       
-    
+    onShareButtonClicked() {
         const options: Record<string, any> = {};
+    
         if (bridge.platform.id === "vk") {
             options.link = "YOUR_LINK";
         }
     
-        try {
-            await bridge.social.share(options);
-        } catch (error) {
-            console.error("Share failed:", error);
-        }
-    
-        
+        bridge.social.share(options)
+            .then(() => {
+                // Optionally handle success
+                console.log("Share successful");
+            })
+            .catch(error => {
+                console.error("Share failed:", error);
+            });
+            
     }
     
     async onInviteFriendsButtonClicked() {
