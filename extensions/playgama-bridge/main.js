@@ -104,6 +104,46 @@ module.exports = {
       } catch (err) {
         console.error(`[${PACKAGE_NAME}] Error installing templates:`, err);
       }
+    },
+
+ updateBridgeConfig() {
+  console.log(`[${PACKAGE_NAME}] Updating bridge config...`);
+  const extDir = __dirname;
+  const projectRoot = Editor.Project.path;
+  const srcPath = path.join(extDir, 'playgama-bridge-config.json');
+  const destPath = path.join(projectRoot, 'preview-template', 'playgama-bridge-config.json');
+
+  try {
+    if (fs.existsSync(srcPath)) {
+      fs.copyFileSync(srcPath, destPath);
+      console.log(`[${PACKAGE_NAME}] Updated config copied to preview-template`);
+
+      Editor.Dialog.info('playgama-bridge-config.json updated successfully!', {
+        title: 'Playgama Bridge',
+        buttons: ['OK']
+      });
+    } else {
+      console.warn(`[${PACKAGE_NAME}] Config file not found: ${srcPath}`);
+
+      Editor.Dialog.error('Config file not found!', {
+        title: 'Playgama Bridge',
+        buttons: ['OK']
+      });
+    }
+  } catch (err) {
+    console.error(`[${PACKAGE_NAME}] Error updating bridge config:`, err);
+
+    Editor.Dialog.error('Failed to update config.', {
+      title: 'Playgama Bridge',
+      buttons: ['OK']
+    });
+  }
+}
+},
+
+  messages: {
+    'update-bridge-config'() {
+      module.exports.methods.updateBridgeConfig();
     }
   }
 };

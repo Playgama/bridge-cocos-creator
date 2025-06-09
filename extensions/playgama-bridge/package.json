@@ -12,11 +12,19 @@
         "path": "Extension/Playgama Bridge",
         "label": "Install",
         "message": "playgama-install"
+      },
+      {
+        "path": "Extension/Playgama Bridge",
+        "label": "Update Bridge Config",
+        "message": "update-bridge-config"
       }
     ],
     "messages": {
       "playgama-install": {
         "methods": ["onInstall"]
+      },
+      "update-bridge-config": {
+        "methods": ["updateBridgeConfig"]
       }
     }
     }
