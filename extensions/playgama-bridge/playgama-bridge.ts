@@ -95,6 +95,11 @@ export enum INTERSTITIAL_STATE {
     FAILED = 'failed'
 }
 
+export enum BANNER_POSITION{
+    TOP = 'top',
+    BOTTOM = 'bottom'
+}
+
 export type RewardCallback = {
     onLoading?:() => void, 
     onOpened?:() => void, 
@@ -132,13 +137,13 @@ export interface AdvertisementModule extends ModuleBase {
 
     setMinimumDelayBetweenInterstitial(delay: number): void;
 
-    showBanner(options: any): void;
+    showBanner(position?: BANNER_POSITION, placement?: string): void;
 
     hideBanner(): void;
 
-    showInterstitial(): void;
+    showInterstitial(placement?: string): void;
 
-    showRewarded(): void;
+    showRewarded(placement?: string): void;
 
     checkAdBlock(): Promise<boolean>;
 

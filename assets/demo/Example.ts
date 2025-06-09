@@ -1,5 +1,5 @@
 import { _decorator, Component, EditBox, Node, RichText } from 'cc';
-import { VISIBILITY_STATE,BANNER_STATE, INTERSTITIAL_STATE, REWARDED_STATE, STORAGE_TYPE, PLATFORM_MESSAGE, ACTION_NAME, EVENT_NAME } from '../../extensions/playgama-bridge/playgama-bridge.ts';
+import { VISIBILITY_STATE,BANNER_STATE, INTERSTITIAL_STATE, REWARDED_STATE, STORAGE_TYPE, PLATFORM_MESSAGE, ACTION_NAME, EVENT_NAME, BANNER_POSITION } from '../../extensions/playgama-bridge/playgama-bridge.ts';
 const { ccclass, property } = _decorator;
 
 @ccclass('Example')
@@ -332,7 +332,7 @@ export class Example extends Component {
                 break;
         }
     
-        bridge.advertisement.showBanner(options);
+        bridge.advertisement.showBanner(BANNER_POSITION.BOTTOM);
     }
 
     onHideBannerButtonClicked() {
