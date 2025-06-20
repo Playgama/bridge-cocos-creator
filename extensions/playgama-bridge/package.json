@@ -2,8 +2,8 @@
     "name": "playgama-bridge",
     "version": "1.0.0",
     "package_version": 2,
-    "description": "Install Playgama Bridge SDK to Cocos Creator 3.x",
-    "author": "Playgama Team",
+    "description": "Playgama Bridge SDK for Cocos Creator 3.x",
+    "author": "Playgama.com",
     "main": "main.js",
     "contributions": {
       "builder": "./builder.js",
