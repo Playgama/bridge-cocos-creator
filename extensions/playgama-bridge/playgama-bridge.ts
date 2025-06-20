@@ -66,6 +66,7 @@ export enum PLATFORM_MESSAGE {
     PLAYER_GOT_ACHIEVEMENT = 'player_got_achievement',
 }
 
+
 export enum ACTION_NAME {
     INITIALIZE = 'initialize',
     AUTHORIZE_PLAYER = 'authorize_player',
@@ -92,6 +93,11 @@ export enum INTERSTITIAL_STATE {
     OPENED = 'opened',
     CLOSED = 'closed',
     FAILED = 'failed'
+}
+
+export enum BANNER_POSITION{
+    TOP = 'top',
+    BOTTOM = 'bottom'
 }
 
 export type RewardCallback = {
@@ -131,13 +137,15 @@ export interface AdvertisementModule extends ModuleBase {
 
     setMinimumDelayBetweenInterstitial(delay: number): void;
 
-    showBanner(options: any): void;
+    showBanner(position?: BANNER_POSITION, placement?: string): void;
 
     hideBanner(): void;
 
-    showInterstitial(): void;
+    showInterstitial(placement?: string): void;
 
-    showRewarded(): void;
+    showRewarded(placement?: string): void;
+
+    checkAdBlock(): Promise<boolean>;
 
     on(event: string, listener: (...args: any[]) => void): this;
 
@@ -180,7 +188,7 @@ export interface StorageModule extends ModuleBase {
 
     set(key: string|string[], value: any, options?: any): any;
 
-    delete(key: string, options: any): any;
+    delete(key: string|string[], options?: any): any;
 }
 
 export interface SocialModule extends ModuleBase {
@@ -193,7 +201,7 @@ export interface SocialModule extends ModuleBase {
     isRateSupported: boolean;
     isExternalLinksAllowed: boolean;
 
-    inviteFriends(): any | Promise<never>;
+    inviteFriends(options?: any): any | Promise<never>;
 
     joinCommunity(options: any): any | Promise<never>;
 
@@ -231,6 +239,7 @@ export interface PlatformModule extends ModuleBase {
     isGetGameByIdSupported: boolean;
 
     sendMessage(message: string): any | Promise<any>;
+    sendMessage(message: PLATFORM_MESSAGE): Promise<any>;
 
     getServerTime(): Promise<number>;
 
@@ -300,4 +309,5 @@ export interface PlaygamaBridge {
 
 declare global {
     var bridge: PlaygamaBridge;
+    var platformMessage: PLATFORM_MESSAGE;
 }

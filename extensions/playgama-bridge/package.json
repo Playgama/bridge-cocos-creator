@@ -1,9 +1,31 @@
 {
-    "name": "playgama-bridge-installer",
+    "name": "playgama-bridge",
     "version": "1.0.0",
-    "description": "Automatically copies Playgama bridge files after web-mobile build.",
+    "package_version": 2,
+    "description": "Install Playgama Bridge SDK to Cocos Creator 3.x",
     "author": "Playgama Team",
+    "main": "main.js",
     "contributions": {
-      "builder": "./builder.js"
+      "builder": "./builder.js",
+      "menu": [
+      {
+        "path": "Extension/Playgama Bridge",
+        "label": "Install",
+        "message": "playgama-install"
+      },
+      {
+        "path": "Extension/Playgama Bridge",
+        "label": "Update Bridge Config",
+        "message": "update-bridge-config"
+      }
+    ],
+    "messages": {
+      "playgama-install": {
+        "methods": ["onInstall"]
+      },
+      "update-bridge-config": {
+        "methods": ["updateBridgeConfig"]
+      }
+    }
     }
   }

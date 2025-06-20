@@ -23,6 +23,21 @@
        
     </head>
     <body>
+    
+      <script>
+        if (typeof bridge !== 'undefined') {
+          bridge.initialize()
+            .then(() => {
+              console.log('Initialization completed');
+              console.log('Language: ', bridge.platform.language);
+              console.log('Platform version: ', bridge.platform.id);
+            })
+            .catch(() => {
+              console.log('Bridge initialized, but the user likely has adblock or an issue occurred');
+            });
+        } else {
+          console.error('bridge is not defined – script may have failed to load or is blocked.');
+        }
       </script>
       <div id="GameDiv">
         <div id="Cocos3dGameContainer">
