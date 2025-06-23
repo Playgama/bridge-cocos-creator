@@ -5,6 +5,7 @@
     "description": "Playgama Bridge SDK for Cocos Creator 3.x",
     "author": "Playgama.com",
     "main": "main.js",
+    "editor": ">=3.8.2",
     "contributions": {
       "builder": "./builder.js",
       "menu": [
