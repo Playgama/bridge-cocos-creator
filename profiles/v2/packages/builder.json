@@ -1,5 +1,5 @@
 {
-  "__version__": "1.3.7",
+  "__version__": "1.3.9",
   "log": {
     "level": 2
   },
@@ -11,7 +11,8 @@
         "progress": 1,
         "state": "success",
         "stage": "build",
-        "message": "6-23-2025 10:58:24 build success in 1 min 10 s!",
+        "message": "6-25-2025 20:03:05 build success in 35 s!",
+        "detailMessage": "// ---- build task cocos-service：onAfterCompressSettings ----\r",
         "options": {
           "name": "playgama-integration-test",
           "server": "",
@@ -45,9 +46,30 @@
           "buildMode": "normal",
           "packages": {},
           "__version__": "1.3.7",
-          "logDest": "project://temp/builder/log/web-mobile5-13-2025 16-46.log"
+          "logDest": "project://temp/builder/log/web-mobile5-13-2025 16-46.log",
+          "overwriteProjectSettings": {
+            "includeModules": {
+              "physics": "inherit-project-setting",
+              "physics-2d": "inherit-project-setting",
+              "gfx-webgl2": "inherit-project-setting"
+            },
+            "macroConfig": {
+              "cleanupImageCache": "inherit-project-setting"
+            }
+          },
+          "nativeCodeBundleMode": "wasm",
+          "engineModulesConfigKey": "migrationsConfig",
+          "mangleProperties": false,
+          "inlineEnum": true,
+          "md5CacheOptions": {
+            "excludes": [],
+            "includes": [],
+            "replaceOnly": [],
+            "handleTemplateMd5Link": true
+          },
+          "wasmCompressionMode": false
         },
-        "time": "6-23-2025 10:57:14",
+        "time": "6-25-2025 20:02:29",
         "dirty": false
       }
     }

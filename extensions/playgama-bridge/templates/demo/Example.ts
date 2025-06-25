@@ -55,7 +55,7 @@ export class Example extends Component {
     delayInputField: EditBox;
 
 
-     @property(RichText)
+    @property(RichText)
     adBlockDetectedText: RichText;
 
     @property(RichText)
@@ -75,7 +75,7 @@ export class Example extends Component {
 
     private readonly coinsKey = "coins";
     private readonly levelKey = "level";
-    
+
 
     @property(RichText)
     isShareSupported: RichText;
@@ -95,15 +95,7 @@ export class Example extends Component {
     isExternalLinksAllowed: RichText;
 
     @property(RichText)
-    isLeaderboardSupported: RichText;
-    @property(RichText)
-    isNativePopupSupported: RichText;
-    @property(RichText)
-    isSetScoreSupported: RichText;
-    @property(RichText)
-    isGetScoreSupported: RichText;
-    @property(RichText)
-    isGetEntriesSupported: RichText;
+    leaderboardsType: RichText;
 
     @property(RichText)
     isPaymentsSupported: RichText;
@@ -123,7 +115,7 @@ export class Example extends Component {
     achievementIdInputField: EditBox;
     @property(EditBox)
     achievementNameInputField: EditBox;
-    
+
 
 
 
@@ -140,7 +132,7 @@ export class Example extends Component {
         this.tldText.string = 'TLD: ' + bridge.platform.tld;
         this.isGetAllGamesSupported.string = 'Is get all games supported: ' + bridge.platform.isGetAllGamesSupported;
         this.isGetGameByIdSupported.string = 'Is get game by id supported: ' + bridge.platform.isGetGameByIdSupported;
-    
+
 
         this.isAuthorizationSupported.string = 'Is authorization supported: ' + bridge.player.isAuthorizationSupported;
         this.isAuthorized.string = 'Is authorized: ' + bridge.player.isAuthorized;
@@ -162,7 +154,7 @@ export class Example extends Component {
         this.isPlatformInternalSupportedText.string = 'Is platform internal supported: ' + bridge.storage.isSupported(STORAGE_TYPE.PLATFORM_INTERNAL);
         this.isLocalStorageAvailableText.string = 'Is local storage available: ' + bridge.storage.isAvailable(STORAGE_TYPE.LOCAL_STORAGE);
         this.isPlatformInternalAvailableText.string = 'Is platform internal available: ' + bridge.storage.isAvailable(STORAGE_TYPE.PLATFORM_INTERNAL);
-    
+
         this.isShareSupported.string = 'Is share supported: ' + bridge.social.isShareSupported;
         this.isInviteFriendsSupported.string = 'Is invite friends supported: ' + bridge.social.isInviteFriendsSupported;
         this.isJoinCommunitySupported.string = 'Is join community supported: ' + bridge.social.isJoinCommunitySupported;
@@ -172,11 +164,7 @@ export class Example extends Component {
         this.isRateSupported.string = 'Is rate supported: ' + bridge.social.isRateSupported;
         this.isExternalLinksAllowed.string = 'Is external links allowed: ' + bridge.social.isExternalLinksAllowed;
 
-        this.isLeaderboardSupported.string = 'Is leaderboard supported: ' + bridge.leaderboard.isSupported;
-        this.isNativePopupSupported.string = 'Is native popup supported: ' + bridge.leaderboard.isNativePopupSupported;
-        this.isSetScoreSupported.string = 'Is set score supported: ' + bridge.leaderboard.isSetScoreSupported;
-        this.isGetScoreSupported.string = 'Is get score supported: ' + bridge.leaderboard.isGetScoreSupported;
-        this.isGetEntriesSupported.string = 'Is get entries supported: ' + bridge.leaderboard.isGetEntriesSupported;
+        this.leaderboardsType.string = 'Leaderboards Type: ' + bridge.leaderboards.type;
 
         this.isPaymentsSupported.string = 'Is payments supported: ' + bridge.payments.isSupported;
 
@@ -199,7 +187,7 @@ export class Example extends Component {
                 console.error("Failed to send game ready message:", error);
             });
 
-        
+
     }
 
     sendInGameLoadingStartedMessage() {
@@ -294,12 +282,12 @@ export class Example extends Component {
     }
 
     async authorize() {
-    
+
         const options: Record<string, any> = {};
         if (bridge.platform.id === "yandex") {
             options.scopes = true;
         }
-    
+
         try {
             await bridge.player.authorize(options);
             this.updateValues();
@@ -307,7 +295,7 @@ export class Example extends Component {
         } catch (error) {
             console.error("Authorization failed:", error);
         }
-    
+
     }
 
     updateValues() {
@@ -315,7 +303,7 @@ export class Example extends Component {
         this.isAuthorized.string = `Is Authorized: ${bridge.player.isAuthorized}`;
         this.id.string = `ID: ${bridge.player.id}`;
         this.playerName.string = `Name: ${bridge.player.name}`;
-    
+
         if (bridge.player.photos.length > 0) {
             this.photos.string = `Photo: ${bridge.player.photos[0]}`;
         }
@@ -323,7 +311,7 @@ export class Example extends Component {
 
     onShowBannerButtonClicked() {
         const options: Record<string, any> = {};
-    
+
         switch (bridge.platform.id) {
             case "vk":
                 options.position = "bottom";
@@ -331,7 +319,7 @@ export class Example extends Component {
                 options.canClose = false;
                 break;
         }
-    
+
         bridge.advertisement.showBanner(BANNER_POSITION.BOTTOM);
     }
 
@@ -342,19 +330,19 @@ export class Example extends Component {
     onShowInterstitialButtonClicked() {
         bridge.advertisement.showInterstitial();
     }
-    
+
     onShowRewardedButtonClicked() {
         bridge.advertisement.showRewarded();
     }
-    
+
 
     onBannerStateChanged(state: BANNER_STATE) {
         this._lastBannerStates.push(state);
-    
+
         if (this._lastBannerStates.length > 3) {
             this._lastBannerStates.splice(0, this._lastBannerStates.length - 3);
         }
-    
+
         this.bannerState.string = `Last Banner States: ${this._lastBannerStates.join(" → ")}`;
     }
 
@@ -368,18 +356,18 @@ export class Example extends Component {
         switch (state) {
             case 'loading':
                 break;
-    
+
             case 'closed':
             case 'failed':
                 break;
         }
-    
+
         this._lastInterstitialStates.push(state);
-    
+
         if (this._lastInterstitialStates.length > 3) {
             this._lastInterstitialStates.splice(0, this._lastInterstitialStates.length - 3);
         }
-    
+
         this.interstitialState.string = `Last Interstitial States: ${this._lastInterstitialStates.join(" → ")}`;
     }
 
@@ -389,18 +377,18 @@ export class Example extends Component {
         switch (state) {
             case 'loading':
                 break;
-    
+
             case 'closed':
             case 'failed':
                 break;
         }
-    
+
         this._lastRewardedStates.push(state);
-    
+
         if (this._lastRewardedStates.length > 3) {
             this._lastRewardedStates.splice(0, this._lastRewardedStates.length - 3);
         }
-    
+
         this.rewardedState.string = `Last Rewarded States: ${this._lastRewardedStates.join(" → ")}`;
     }
 
@@ -414,10 +402,10 @@ export class Example extends Component {
     }
 
     async onSetStorageDataButtonClicked() {
-    
+
         const coins = parseInt(this.coinsInputField.string) || 0;
         const level = this.levelInputField.string;
-    
+
         try {
             await bridge.storage.set(
                 [this.coinsKey, this.levelKey],
@@ -426,50 +414,50 @@ export class Example extends Component {
         } catch (error) {
             console.error("Failed to set storage data:", error);
         }
-    
+
     }
 
     async onGetStorageDataButtonClicked() {
-        
-    
+
+
         const keys = [this.coinsKey, this.levelKey];
-    
+
         try {
             const data = await bridge.storage.get(keys);
-    
+
             const coins = parseInt(data[0]) || 0;
             this.coinsInputField.string = coins.toString();
-    
+
             this.levelInputField.string = data[1] ?? "default_level";
         } catch (error) {
             console.error("Failed to get storage data:", error);
             this.coinsInputField.string = "0";
             this.levelInputField.string = "default_level";
         }
-    
+
     }
 
     async onDeleteStorageDataButtonClicked() {
-    
+
         const keys = [this.coinsKey, this.levelKey];
-    
+
         try {
             await bridge.storage.delete(keys);
         } catch (error) {
             console.error("Failed to delete storage data:", error);
         }
-    
+
         this.coinsInputField.string = '';
         this.levelInputField.string = '';
     }
 
     onShareButtonClicked() {
         const options: Record<string, any> = {};
-    
+
         if (bridge.platform.id === "vk") {
             options.link = "YOUR_LINK";
         }
-    
+
         bridge.social.share(options)
             .then(() => {
                 // Optionally handle success
@@ -478,73 +466,73 @@ export class Example extends Component {
             .catch(error => {
                 console.error("Share failed:", error);
             });
-            
+
     }
-    
+
     async onInviteFriendsButtonClicked() {
-      
-    
+
+
         const options: Record<string, any> = {};
         if (bridge.platform.id === "ok") {
             options.text = "Hello World!";
         }
-    
+
         try {
             await bridge.social.inviteFriends(options);
         } catch (error) {
             console.error("Invite friends failed:", error);
         }
-    
-       
+
+
     }
-    
+
     async onJoinCommunityButtonClicked() {
-       
-    
+
+
         const options: Record<string, any> = {};
         if (bridge.platform.id === "vk") {
             options.groupId = 199747461;
         } else if (bridge.platform.id === "ok") {
             options.groupId = 62984239710374;
         }
-    
+
         try {
             await bridge.social.joinCommunity(options);
         } catch (error) {
             console.error("Join community failed:", error);
         }
-    
-        
+
+
     }
-    
+
     async onAddToFavoritesButtonClicked() {
-      
-    
+
+
         try {
             await bridge.social.addToFavorites();
         } catch (error) {
             console.error("Add to favorites failed:", error);
         }
-    
-       
+
+
     }
-    
+
     async onAddToHomeScreenButtonClicked() {
-      
-    
+
+
         try {
             await bridge.social.addToHomeScreen();
         } catch (error) {
             console.error("Add to home screen failed:", error);
         }
-    
-    
+
+
     }
-    
+
     async onCreatePostButtonClicked() {
-    
+
         const options: Record<string, any> = {};
-    
+
         if (bridge.platform.id === "vk") {
             options.message = "Hello World!";
             options.attachments = "photo-199747461_457239629";
@@ -569,16 +557,16 @@ export class Example extends Component {
                 },
             ];
         }
-    
+
         try {
             await bridge.social.createPost(options);
         } catch (error) {
             console.error("Create post failed:", error);
         }
-    
-    
+
+
     }
-    
+
     async onRateButtonClicked() {
         try {
             await bridge.social.rate();
@@ -587,81 +575,36 @@ export class Example extends Component {
         }
     }
 
-    onShowNativePopupButtonClicked() {
-        const options: Record<string, any> = {};
-        if (bridge.platform.id === "vk") {
-            options.userResult = 42;
-            options.global = true;
-        }
-    
-        bridge.leaderboard.showNativePopup(options)
-            .then(() => {
-                
-            })
-            .catch(error => {
-                console.error("Show native popup failed:", error);
-                
-            });
-    }
-
     onSetScoreButtonClicked() {
-    
-        const options: Record<string, any> = {};
-        if (bridge.platform.id === "yandex") {
-            options.score = 42;
-            options.leaderboardName = "YOUR_LEADERBOARD_NAME";
-        }
-    
-        bridge.leaderboard.setScore(options)
+
+        var leaderboardId = "YOUR_LEADERBOARD_ID";
+        var score = 42;
+
+        bridge.leaderboards.setScore(leaderboardId, score)
             .then(() => {
-           
+
             })
             .catch(error => {
                 console.error("Set score failed:", error);
             });
-            
+
     }
 
-    onGetScoreButtonClicked() {
-    
-        const options: Record<string, any> = {};
-        if (bridge.platform.id === "yandex") {
-            options.leaderboardName = "YOUR_LEADERBOARD_NAME";
-        }
-    
-        bridge.leaderboard.getScore(options)
-            .then(score => {
-                console.log(`OnGetScoreCompleted, success: true, score: ${score}`);
-            })
-            .catch(error => {
-                console.error("Get score failed:", error);
-            });
-    }
-    
     onGetEntriesButtonClicked() {
-    
-        const options: Record<string, any> = {};
-        if (bridge.platform.id === "yandex") {
-            options.leaderboardName = "YOUR_LEADERBOARD_NAME";
-            options.includeUser = true;
-            options.quantityAround = 10;
-            options.quantityTop = 10;
-        }
-    
-        bridge.leaderboard.getEntries(options)
+
+        var leaderboardId = "YOUR_LEADERBOARD_ID";
+
+        bridge.leaderboards.getEntries(leaderboardId)
             .then(entries => {
                 console.log(`OnGetEntriesCompleted, success: true, entries:`);
-    
-                if (bridge.platform.id === "yandex") {
-                    for (const entry of entries) {
-                        console.log("ID:", entry["id"]);
-                        console.log("Score:", entry["score"]);
-                        console.log("Rank:", entry["rank"]);
-                        console.log("Name:", entry["name"]);
-                        console.log("Photo:", entry["photo"]);
-                    }
+
+                for (const entry of entries) {
+                    console.log("ID:", entry["id"]);
+                    console.log("Score:", entry["score"]);
+                    console.log("Rank:", entry["rank"]);
+                    console.log("Name:", entry["name"]);
+                    console.log("Photo:", entry["photo"]);
                 }
-    
             })
             .catch(error => {
                 console.error("Get entries failed:", error);
@@ -669,7 +612,7 @@ export class Example extends Component {
     }
 
     onGetCatalogButtonClicked() {
-    
+
         bridge.payments.getCatalog()
             .then((list: any[]) => {
                 console.log("OnGetCatalogCompleted, success: true, items:");
@@ -701,12 +644,12 @@ export class Example extends Component {
                 console.error("OnGetPurchasesCompleted, success: false", error);
             })
             .then(() => {
-              
+
             });
     }
-    
+
     onPurchaseButtonClicked() {
-    
+
         bridge.payments.purchase("test_product")
             .then(() => {
                 console.log("OnPurchaseCompleted, success: true");
@@ -715,12 +658,12 @@ export class Example extends Component {
                 console.error("OnPurchaseCompleted, success: false", error);
             })
             .then(() => {
-              
+
             });
     }
 
     onConsumePurchaseButtonClicked() {
-        
+
         bridge.payments.consumePurchase("test_product")
             .then(() => {
                 console.log("OnConsumePurchaseCompleted, success: true");
@@ -729,13 +672,13 @@ export class Example extends Component {
                 console.error("OnConsumePurchaseCompleted, success: false", error);
             })
             .then(() => {
-              
+
             });
     }
 
     onGetRemoteConfigButtonClicked() {
         const options: Record<string, any> = {};
-    
+
         if (bridge.platform.id === "yandex") {
             options.clientFeatures = [
                 {
@@ -744,7 +687,7 @@ export class Example extends Component {
                 },
             ];
         }
-    
+
         bridge.remoteConfig.get(options)
             .then((values: Record<string, string>) => {
                 console.log("OnRemoteConfigGetCompleted, success: true, items:");
@@ -760,7 +703,7 @@ export class Example extends Component {
     }
 
     onUnlockButtonClicked() {
-    
+
         const options: Record<string, any> = {};
         switch (bridge.platform.id) {
             case "y8":
@@ -771,7 +714,7 @@ export class Example extends Component {
                 options.achievement = "YOUR_ACHIEVEMENT_ID";
                 break;
         }
-    
+
         bridge.achievements.unlock(options)
             .then(() => {
                 console.log("OnUnlockCompleted, success: true");
@@ -782,9 +725,9 @@ export class Example extends Component {
     }
 
     onShowAchievementNativePopupButtonClicked() {
-       
+
         const options: Record<string, any> = {};
-    
+
         bridge.achievements.showNativePopup(options)
             .then(() => {
                 console.log("OnShowNativePopupCompleted, success: true");
@@ -795,13 +738,13 @@ export class Example extends Component {
     }
 
     onGetListButtonClicked() {
-    
+
         const options: Record<string, any> = {};
-    
+
         bridge.achievements.getList(options)
             .then((list: any[]) => {
                 console.log("OnGetListCompleted, success: true, items:");
-    
+
                 if (bridge.platform.id === "y8") {
                     for (const item of list) {
                         console.log("achievementid:", item["achievementid"]);
@@ -824,10 +767,10 @@ export class Example extends Component {
             })
             .catch(error => {
                 console.error("OnGetListCompleted, success: false", error);
-               
+
             });
     }
 
-    
-    
+
+
 }

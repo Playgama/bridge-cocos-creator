@@ -15,12 +15,8 @@
         <meta name="renderer" content="webkit" />
         <meta name="force-rendering" content="webkit" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-
         <script src="./playgama-bridge.js"></script>
-
         <link rel="stylesheet" type="text/css" href="<%= cssUrl %>"/>
-
-       
     </head>
     <body>
       </script>
@@ -40,36 +36,26 @@
 
         <script>
           function loadGame() {
-            System.import('./index.js')
-              .then(() => console.log('✅ Game started'))
-              .catch(err => console.error('❌ Game failed to load:', err));
+            System.import('./index.js');
           }
-        
+
           function waitForSystemThenLoadGame() {
             if (typeof System !== 'undefined' && typeof System.import === 'function') {
               loadGame();
             } else {
-              console.log('⏳ Waiting for SystemJS to be ready...');
               setTimeout(waitForSystemThenLoadGame, 50);
             }
           }
-        
+
           if (typeof bridge !== 'undefined') {
             bridge.initialize()
               .then(() => {
-                console.log('✅ Bridge initialized');
                 waitForSystemThenLoadGame();
               })
               .catch(() => {
-                console.warn('⚠️ Bridge init failed or adblock active, loading game anyway');
                 waitForSystemThenLoadGame();
               });
-          } else {
-            console.error('❌ bridge is not defined – maybe blocked or failed to load');
           }
-          
         </script>
-
-
     </body>
 </html>
