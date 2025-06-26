@@ -55,7 +55,7 @@ export class Example extends Component {
     delayInputField: EditBox;
 
 
-     @property(RichText)
+    @property(RichText)
     adBlockDetectedText: RichText;
 
     @property(RichText)
@@ -577,8 +577,8 @@ export class Example extends Component {
 
     onSetScoreButtonClicked() {
 
-        var leaderboardId = "stickmenannihilation";
-        var score = 80;
+        var leaderboardId = "YOUR_LEADERBOARD_ID";
+        var score = 42;
 
         bridge.leaderboards.setScore(leaderboardId, score)
             .then(() => {
@@ -592,7 +592,7 @@ export class Example extends Component {
 
     onGetEntriesButtonClicked() {
 
-        var leaderboardId = "stickmenannihilation";
+        var leaderboardId = "YOUR_LEADERBOARD_ID";
 
         bridge.leaderboards.getEntries(leaderboardId)
             .then(entries => {
