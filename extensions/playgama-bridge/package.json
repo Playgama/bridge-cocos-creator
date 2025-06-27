@@ -1,8 +1,8 @@
 {
     "name": "playgama-bridge",
-    "version": "1.0.0",
+    "version": "1.23.0",
     "package_version": 2,
-    "description": "Playgama Bridge SDK for Cocos Creator 3.x",
+    "description": "One SDK for cross-platform publishing HTML5 games",
     "author": "Playgama.com",
     "main": "main.js",
     "editor": ">=3.8.2",

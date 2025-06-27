@@ -1,26 +1,20 @@
 export enum PLATFORM_ID {
     VK = 'vk',
+    OK = 'ok',
     YANDEX = 'yandex',
     CRAZY_GAMES = 'crazy_games',
     ABSOLUTE_GAMES = 'absolute_games',
     GAME_DISTRIBUTION = 'game_distribution',
-    MOCK = 'mock',
     PLAYGAMA = 'playgama',
-    QA_TOOL = 'qa_tool'
-}
-
-export enum MODULE_NAME {
-    PLATFORM = 'platform',
-    PLAYER = 'player',
-    GAME = 'game',
-    STORAGE = 'storage',
-    ADVERTISEMENT = 'advertisement',
-    ACHIEVEMENTS = 'achievements',
-    SOCIAL = 'social',
-    DEVICE = 'device',
-    LEADERBOARD = 'leaderboard',
-    CLIPBOARD = 'clipboard',
-    PAYMENTS = 'payments'
+    PLAYDECK = 'playdeck',
+    TELEGRAM = 'telegram',
+    Y8 = 'y8',
+    LAGGED = 'lagged',
+    FACEBOOK = 'facebook',
+    POKI = 'poki',
+    MOCK = 'mock',
+    QA_TOOL = 'qa_tool',
+    MSN = 'msn',
 }
 
 export enum EVENT_NAME {
@@ -28,21 +22,6 @@ export enum EVENT_NAME {
     REWARDED_STATE_CHANGED = 'rewarded_state_changed',
     BANNER_STATE_CHANGED = 'banner_state_changed',
     VISIBILITY_STATE_CHANGED = 'visibility_state_changed'
-}
-
-export enum REWARDED_STATE {
-    LOADING = 'loading',
-    OPENED = 'opened',
-    CLOSED = 'closed',
-    FAILED = 'failed',
-    REWARDED = 'rewarded'
-}
-
-export enum BANNER_STATE {
-    LOADING = 'loading',
-    SHOWN = 'shown',
-    HIDDEN = 'hidden',
-    FAILED = 'failed'
 }
 
 export enum STORAGE_TYPE {
@@ -66,23 +45,6 @@ export enum PLATFORM_MESSAGE {
     PLAYER_GOT_ACHIEVEMENT = 'player_got_achievement',
 }
 
-
-export enum ACTION_NAME {
-    INITIALIZE = 'initialize',
-    AUTHORIZE_PLAYER = 'authorize_player',
-    SHARE = 'share',
-    INVITE_FRIENDS = 'invite_friends',
-    JOIN_COMMUNITY = 'join_community',
-    CREATE_POST = 'create_post',
-    ADD_TO_HOME_SCREEN = 'add_to_home_screen',
-    ADD_TO_FAVORITES = 'add_to_favorites',
-    RATE = 'rate',
-    SET_LEADERBOARD_SCORE = 'set_leaderboard_score',
-    GET_LEADERBOARD_SCORE = 'get_leaderboard_score',
-    GET_LEADERBOARD_ENTRIES = 'get_leaderboard_entries',
-    SHOW_LEADERBOARD_NATIVE_POPUP = 'show_leaderboard_native_popup'
-}
-
 export enum VISIBILITY_STATE {
     VISIBLE = 'visible',
     HIDDEN = 'hidden'
@@ -95,24 +57,30 @@ export enum INTERSTITIAL_STATE {
     FAILED = 'failed'
 }
 
+export enum REWARDED_STATE {
+    LOADING = 'loading',
+    OPENED = 'opened',
+    CLOSED = 'closed',
+    FAILED = 'failed',
+    REWARDED = 'rewarded'
+}
+
+export enum BANNER_STATE {
+    LOADING = 'loading',
+    SHOWN = 'shown',
+    HIDDEN = 'hidden',
+    FAILED = 'failed'
+}
+
+export enum LEADERBOARD_TYPE {
+    NOT_AVAILABLE = 'not_available',
+    IN_GAME = 'in_game',
+    NATIVE = 'native',
+}
+
 export enum BANNER_POSITION{
     TOP = 'top',
     BOTTOM = 'bottom'
-}
-
-export type RewardCallback = {
-    onLoading?:() => void, 
-    onOpened?:() => void, 
-    onClosed?:(rewarded: boolean) => void, 
-    onFailed?:() => void, 
-    onRewarded?:() => void
-}
-
-export type InterstitialCallback = {
-    onLoading?:() => void, 
-    onOpened?:() => void, 
-    onClosed?:() => void, 
-    onFailed?:() => void,
 }
 
 
@@ -160,21 +128,13 @@ export interface RemoteConfigModule extends ModuleBase {
    isSupported: boolean;
    get(options): any;
 }
-export interface LeaderboardModule extends ModuleBase {
-    isSupported: boolean;
-    isNativePopupSupported: boolean;
-    isMultipleBoardsSupported: boolean;
-    isSetScoreSupported: boolean;
-    isGetScoreSupported: boolean;
-    isGetEntriesSupported: boolean;
 
-    setScore(options: any): any;
+export interface LeaderboardsModule extends ModuleBase {
+    type: LEADERBOARD_TYPE;
 
-    getScore(options: any): any;
+    setScore(id: string, score: number): any;
 
-    getEntries(options: any): any;
-
-    showNativePopup(options: any): any;
+    getEntries(id: string): any;
 }
 
 export interface StorageModule extends ModuleBase {
@@ -289,7 +249,6 @@ export interface PaymentsModule extends ModuleBase {
 }
 
 export interface PlaygamaBridge {
-    
     version: string;
     isInitialized: boolean;
     platform: PlatformModule;
@@ -300,7 +259,7 @@ export interface PlaygamaBridge {
     achievements: AchievementsModule;
     social: SocialModule;
     device: DeviceModule;
-    leaderboard: LeaderboardModule;
+    leaderboards: LeaderboardsModule;
     remoteConfig: RemoteConfigModule;
     clipboard: ClipboardModule;
     payments: PaymentsModule;
