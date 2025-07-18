@@ -99,7 +99,9 @@ export interface DeviceModule extends ModuleBase {
 export interface AdvertisementModule extends ModuleBase {
     isBannerSupported: boolean;
     bannerState: BANNER_STATE;
+    isInterstitialSupported: boolean;
     interstitialState: INTERSTITIAL_STATE;
+    isRewardedSupported: boolean;
     rewardedState: REWARDED_STATE;
     minimumDelayBetweenInterstitial: number;
 
