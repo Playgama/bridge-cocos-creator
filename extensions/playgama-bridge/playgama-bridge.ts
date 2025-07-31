@@ -21,7 +21,9 @@ export enum EVENT_NAME {
     INTERSTITIAL_STATE_CHANGED = 'interstitial_state_changed',
     REWARDED_STATE_CHANGED = 'rewarded_state_changed',
     BANNER_STATE_CHANGED = 'banner_state_changed',
-    VISIBILITY_STATE_CHANGED = 'visibility_state_changed'
+    VISIBILITY_STATE_CHANGED = 'visibility_state_changed',
+    AUDIO_STATE_CHANGED = 'audio_state_changed',
+    PAUSE_STATE_CHANGED = 'pause_state_changed',
 }
 
 export enum STORAGE_TYPE {
@@ -99,7 +101,9 @@ export interface DeviceModule extends ModuleBase {
 export interface AdvertisementModule extends ModuleBase {
     isBannerSupported: boolean;
     bannerState: BANNER_STATE;
+    isInterstitialSupported: boolean;
     interstitialState: INTERSTITIAL_STATE;
+    isRewardedSupported: boolean;
     rewardedState: REWARDED_STATE;
     minimumDelayBetweenInterstitial: number;
 
@@ -195,6 +199,7 @@ export interface PlatformModule extends ModuleBase {
     payload: unknown;
     tld: string;
 
+    isAudioEnabled: boolean;
     isGetAllGamesSupported: boolean;
     isGetGameByIdSupported: boolean;
 
@@ -206,6 +211,14 @@ export interface PlatformModule extends ModuleBase {
     getAllGames(): Promise<any>;
 
     getGameById(options?: any): Promise<any>;
+
+    on(event: string, listener: (...args: any[]) => void): this;
+
+    once(event: string, listener: (...args: any[]) => void): this;
+
+    off(event: string, listener: (...args: any[]) => void): this;
+
+    emit(event: string, ...args: any[]): boolean;
 }
 
 export interface PlayerModule extends ModuleBase {
