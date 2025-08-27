@@ -611,6 +611,19 @@ export class Example extends Component {
             });
     }
 
+    onShowNativePopupButtonClicked() {
+
+        var leaderboardId = "YOUR_LEADERBOARD_ID";
+
+        bridge.leaderboards.showNativePopup(leaderboardId)
+            .then(() => {
+
+            })
+            .catch(error => {
+                console.error("Show native popup failed:", error);
+            });
+    }
+
     onGetCatalogButtonClicked() {
 
         bridge.payments.getCatalog()
