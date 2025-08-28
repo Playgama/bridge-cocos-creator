@@ -78,6 +78,7 @@ export enum LEADERBOARD_TYPE {
     NOT_AVAILABLE = 'not_available',
     IN_GAME = 'in_game',
     NATIVE = 'native',
+    NATIVE_POPUP = 'native_popup',
 }
 
 export enum BANNER_POSITION{
@@ -139,6 +140,8 @@ export interface LeaderboardsModule extends ModuleBase {
     setScore(id: string, score: number): any;
 
     getEntries(id: string): any;
+
+    showNativePopup(id: string): any;
 }
 
 export interface StorageModule extends ModuleBase {
