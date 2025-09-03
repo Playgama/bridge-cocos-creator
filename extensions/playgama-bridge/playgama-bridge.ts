@@ -230,6 +230,7 @@ export interface PlayerModule extends ModuleBase {
     id: number | string;
     name: string;
     photos: string[];
+    extra: object;
 
     authorize(options?: any): Promise<any>;
 }
