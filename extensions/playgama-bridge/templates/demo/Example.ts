@@ -137,18 +137,11 @@ export class Example extends Component {
         this.isAuthorizationSupported.string = 'Is authorization supported: ' + bridge.player.isAuthorizationSupported;
         this.isAuthorized.string = 'Is authorized: ' + bridge.player.isAuthorized;
 
-        // this.id.string = 'ID: ' + bridge.player.id;
-        // this.playerName.string = 'Player name: ' + bridge.player.name;
-        // this.photos.string = 'Photo: ' + bridge.player.photos;
-
         this.deviceType.string = 'Device type: ' + bridge.device.type;
 
         this.isBannerSupported.string = 'Is banner supported: ' + bridge.advertisement.isBannerSupported;
 
         this.defaultTypeText.string = 'Default type: ' + bridge.storage.defaultType;
-
-        console.log('Local = ', STORAGE_TYPE.LOCAL_STORAGE);
-        console.log('Platform internal = ', STORAGE_TYPE.PLATFORM_INTERNAL);
 
         this.isLocalStorageSupportedText.string = 'Is local storage supported: ' + bridge.storage.isSupported(STORAGE_TYPE.LOCAL_STORAGE);
         this.isPlatformInternalSupportedText.string = 'Is platform internal supported: ' + bridge.storage.isSupported(STORAGE_TYPE.PLATFORM_INTERNAL);
@@ -352,16 +345,6 @@ export class Example extends Component {
     }
 
     onInterstitialStateChanged(state: INTERSTITIAL_STATE) {
-        // console.log("Interstitial state: ", state);
-        switch (state) {
-            case 'loading':
-                break;
-
-            case 'closed':
-            case 'failed':
-                break;
-        }
-
         this._lastInterstitialStates.push(state);
 
         if (this._lastInterstitialStates.length > 3) {
@@ -372,17 +355,6 @@ export class Example extends Component {
     }
 
     onRewardedStateChanged(state: REWARDED_STATE) {
-
-        console.log("Rewarded state: ", state);
-        switch (state) {
-            case 'loading':
-                break;
-
-            case 'closed':
-            case 'failed':
-                break;
-        }
-
         this._lastRewardedStates.push(state);
 
         if (this._lastRewardedStates.length > 3) {
@@ -608,6 +580,19 @@ export class Example extends Component {
             })
             .catch(error => {
                 console.error("Get entries failed:", error);
+            });
+    }
+
+    onShowNativePopupButtonClicked() {
+
+        var leaderboardId = "YOUR_LEADERBOARD_ID";
+
+        bridge.leaderboards.showNativePopup(leaderboardId)
+            .then(() => {
+
+            })
+            .catch(error => {
+                console.error("Show native popup failed:", error);
             });
     }
 

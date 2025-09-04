@@ -39,7 +39,8 @@
                     setTimeout(waitForSystemThenLoadGame, 50);
                 }
             }
-
+            
+            bridge.engine = 'cocos'
             bridge.initialize().finally(() => { waitForSystemThenLoadGame(); })
         </script>
     </body>
