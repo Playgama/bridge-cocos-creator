@@ -9,8 +9,8 @@
         "progress": 1,
         "state": "success",
         "stage": "build",
-        "message": "6-27-2025 12:41:49 build success in 38 s!",
-        "detailMessage": "// ---- build task cocos-service：onAfterBuild ----\r",
+        "message": "9-26-2025 10:24:43 build success in 38 s!",
+        "detailMessage": "// ---- build task cocos-service：onAfterCompressSettings ----\r",
         "options": {
           "name": "bridge-cocos-creator",
           "server": "",
@@ -67,7 +67,7 @@
           "__version__": "1.3.9",
           "logDest": "project://temp/builder/log/web-mobile6-27-2025 12-38.log"
         },
-        "time": "6-27-2025 12:41:11",
+        "time": "9-26-2025 10:24:05",
         "dirty": false
       }
     }

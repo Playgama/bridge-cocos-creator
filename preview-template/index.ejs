@@ -35,10 +35,6 @@
     </head>
     <body>
         <canvas id="canvas" class="fullscreen"></canvas>
-        <script src="./playgama-bridge.js"></script>
-        <script>
-            bridge.initialize()
-        </script>
         <%- include(cocosToolBar, {config: config}) %>
         <div id="content" class="content">
             <div class="contentWrap">
@@ -63,5 +59,21 @@
             </p>
         </div>
         <%- include(cocosTemplate, {}) %>
+        <script>
+            function addLocalBridge() {
+                const scriptElement = document.createElement('script')
+                scriptElement.src = './playgama-bridge.js'
+                document.body.appendChild(scriptElement)
+                scriptElement.onload = function() {
+                    initializeBridge()
+                }
+            }
+
+            function initializeBridge() {
+                bridge.engine = 'cocos'
+                bridge.initialize()
+            }
+        </script>
+        <script src="https://bridge.playgama.com/v1/stable/playgama-bridge.js" onload="initializeBridge()" onerror="addLocalBridge()"></script>
     </body>
 </html>

@@ -23,7 +23,6 @@
                 <canvas id="GameCanvas" oncontextmenu="event.preventDefault()" tabindex="0"></canvas>
             </div>
         </div>
-        <script src="./playgama-bridge.js"></script>
         <script src="src/polyfills.bundle.js" charset="utf-8"></script>
         <script src="src/system.bundle.js" charset="utf-8"></script>
         <script src="src/import-map.json" type="systemjs-importmap" charset="utf-8"></script>
@@ -39,9 +38,21 @@
                     setTimeout(waitForSystemThenLoadGame, 50);
                 }
             }
-            
-            bridge.engine = 'cocos'
-            bridge.initialize().finally(() => { waitForSystemThenLoadGame(); })
+
+            function addLocalBridge() {
+                const scriptElement = document.createElement('script')
+                scriptElement.src = './playgama-bridge.js'
+                document.body.appendChild(scriptElement)
+                scriptElement.onload = function() {
+                    initializeBridge()
+                }
+            }
+
+            function initializeBridge() {
+                bridge.engine = 'cocos'
+                bridge.initialize().finally(() => { waitForSystemThenLoadGame(); })
+            }
         </script>
+        <script src="https://bridge.playgama.com/v1/stable/playgama-bridge.js" onload="initializeBridge()" onerror="addLocalBridge()"></script>
     </body>
 </html>
