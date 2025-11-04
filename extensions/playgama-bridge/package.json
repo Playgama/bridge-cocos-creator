@@ -10,12 +10,12 @@
       "builder": "./builder.js",
       "menu": [
       {
-        "path": "Extension/Playgama Bridge",
+        "path": "Extensions/Playgama Bridge",
         "label": "Install",
         "message": "playgama-install"
       },
       {
-        "path": "Extension/Playgama Bridge",
+        "path": "Extensions/Playgama Bridge",
         "label": "Update Bridge Config",
         "message": "update-bridge-config"
       }
