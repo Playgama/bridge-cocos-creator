@@ -256,7 +256,7 @@ export interface ClipboardModule extends ModuleBase {
 export interface PaymentsModule extends ModuleBase {
     isSupported: boolean;
 
-    purchase(id: string): Promise<any>;
+    purchase(id: string, options?: any): Promise<any>;
 
     getPurchases(): Promise<any>;
 
