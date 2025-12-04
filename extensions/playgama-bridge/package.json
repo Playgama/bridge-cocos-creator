@@ -1,6 +1,6 @@
 {
     "name": "playgama-bridge",
-    "version": "1.25.0",
+    "version": "1.27.0",
     "package_version": 2,
     "description": "One SDK for cross-platform publishing HTML5 games",
     "author": "Playgama.com",

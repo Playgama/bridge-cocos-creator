@@ -15,6 +15,7 @@ export enum PLATFORM_ID {
     MOCK = 'mock',
     QA_TOOL = 'qa_tool',
     MSN = 'msn',
+    XIAOMI = 'xiaomi',
 }
 
 export enum EVENT_NAME {
