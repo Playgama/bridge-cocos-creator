@@ -46,6 +46,11 @@ export enum PLATFORM_MESSAGE {
     GAMEPLAY_STARTED = 'gameplay_started',
     GAMEPLAY_STOPPED = 'gameplay_stopped',
     PLAYER_GOT_ACHIEVEMENT = 'player_got_achievement',
+    LEVEL_STARTED = 'level_started',
+    LEVEL_COMPLETED = 'level_completed',
+    LEVEL_FAILED = 'level_failed',
+    LEVEL_PAUSED = 'level_paused',
+    LEVEL_RESUMED = 'level_resumed',
 }
 
 export enum VISIBILITY_STATE {
@@ -207,8 +212,7 @@ export interface PlatformModule extends ModuleBase {
     isGetAllGamesSupported: boolean;
     isGetGameByIdSupported: boolean;
 
-    sendMessage(message: string): any | Promise<any>;
-    sendMessage(message: PLATFORM_MESSAGE): Promise<any>;
+    sendMessage(message: PLATFORM_MESSAGE, options?: any): Promise<any>;
 
     getServerTime(): Promise<number>;
 
