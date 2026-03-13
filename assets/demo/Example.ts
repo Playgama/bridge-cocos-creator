@@ -1,5 +1,5 @@
 import { _decorator, Component, EditBox, Node, RichText } from 'cc';
-import { VISIBILITY_STATE,BANNER_STATE, INTERSTITIAL_STATE, REWARDED_STATE, STORAGE_TYPE, PLATFORM_MESSAGE, ACTION_NAME, EVENT_NAME, BANNER_POSITION } from '../../extensions/playgama-bridge/playgama-bridge.ts';
+import { VISIBILITY_STATE, BANNER_STATE, INTERSTITIAL_STATE, REWARDED_STATE, STORAGE_TYPE, PLATFORM_MESSAGE, EVENT_NAME, BANNER_POSITION } from '../../extensions/playgama-bridge/playgama-bridge.ts';
 const { ccclass, property } = _decorator;
 
 @ccclass('Example')
@@ -116,6 +116,8 @@ export class Example extends Component {
     @property(EditBox)
     achievementNameInputField: EditBox;
 
+    @property(EditBox)
+    sendMessageOptionsInputField: EditBox;
 
 
 
@@ -230,6 +232,67 @@ export class Example extends Component {
             })
             .catch((error) => {
                 console.error("Failed to send player got achievement message:", error);
+            });
+    }
+
+    private getLevelMessageOptions() {
+        const input = this.sendMessageOptionsInputField?.string;
+        if (!input) return {};
+        try {
+            return JSON.parse(input);
+        } catch (e) {
+            console.error("Invalid JSON in options field:", e);
+            return {};
+        }
+    }
+
+    sendLevelStartedMessage() {
+        bridge.platform.sendMessage(PLATFORM_MESSAGE.LEVEL_STARTED, this.getLevelMessageOptions())
+            .then(() => {
+                console.log("Level started message sent.");
+            })
+            .catch((error) => {
+                console.error("Failed to send level started message:", error);
+            });
+    }
+
+    sendLevelCompletedMessage() {
+        bridge.platform.sendMessage(PLATFORM_MESSAGE.LEVEL_COMPLETED, this.getLevelMessageOptions())
+            .then(() => {
+                console.log("Level completed message sent.");
+            })
+            .catch((error) => {
+                console.error("Failed to send level completed message:", error);
+            });
+    }
+
+    sendLevelFailedMessage() {
+        bridge.platform.sendMessage(PLATFORM_MESSAGE.LEVEL_FAILED, this.getLevelMessageOptions())
+            .then(() => {
+                console.log("Level failed message sent.");
+            })
+            .catch((error) => {
+                console.error("Failed to send level failed message:", error);
+            });
+    }
+
+    sendLevelPausedMessage() {
+        bridge.platform.sendMessage(PLATFORM_MESSAGE.LEVEL_PAUSED, this.getLevelMessageOptions())
+            .then(() => {
+                console.log("Level paused message sent.");
+            })
+            .catch((error) => {
+                console.error("Failed to send level paused message:", error);
+            });
+    }
+
+    sendLevelResumedMessage() {
+        bridge.platform.sendMessage(PLATFORM_MESSAGE.LEVEL_RESUMED, this.getLevelMessageOptions())
+            .then(() => {
+                console.log("Level resumed message sent.");
+            })
+            .catch((error) => {
+                console.error("Failed to send level resumed message:", error);
             });
     }
 
