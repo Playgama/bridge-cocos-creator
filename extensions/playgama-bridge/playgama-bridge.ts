@@ -214,6 +214,8 @@ export interface PlatformModule extends ModuleBase {
 
     sendMessage(message: PLATFORM_MESSAGE, options?: any): Promise<any>;
 
+    sendCustomMessage(id: string, options?: any): Promise<any>;
+
     getServerTime(): Promise<number>;
 
     getAllGames(): Promise<any>;
