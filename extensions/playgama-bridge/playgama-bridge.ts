@@ -22,6 +22,7 @@ export enum EVENT_NAME {
     INTERSTITIAL_STATE_CHANGED = 'interstitial_state_changed',
     REWARDED_STATE_CHANGED = 'rewarded_state_changed',
     BANNER_STATE_CHANGED = 'banner_state_changed',
+    ADVANCED_BANNERS_STATE_CHANGED = 'advanced_banners_state_changed',
     VISIBILITY_STATE_CHANGED = 'visibility_state_changed',
     AUDIO_STATE_CHANGED = 'audio_state_changed',
     PAUSE_STATE_CHANGED = 'pause_state_changed',
@@ -112,6 +113,8 @@ export interface AdvertisementModule extends ModuleBase {
     interstitialState: INTERSTITIAL_STATE;
     isRewardedSupported: boolean;
     rewardedState: REWARDED_STATE;
+    isAdvancedBannersSupported: boolean;
+    advancedBannersState: BANNER_STATE;
     minimumDelayBetweenInterstitial: number;
 
     setMinimumDelayBetweenInterstitial(delay: number): void;
@@ -123,6 +126,10 @@ export interface AdvertisementModule extends ModuleBase {
     showInterstitial(placement?: string): void;
 
     showRewarded(placement?: string): void;
+
+    showAdvancedBanners(placement?: string): void;
+
+    hideAdvancedBanners(): void;
 
     checkAdBlock(): Promise<boolean>;
 
