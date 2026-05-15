@@ -28,11 +28,6 @@ export enum EVENT_NAME {
     PAUSE_STATE_CHANGED = 'pause_state_changed',
 }
 
-export enum STORAGE_TYPE {
-    LOCAL_STORAGE = 'local_storage',
-    PLATFORM_INTERNAL = 'platform_internal'
-}
-
 export enum DEVICE_TYPE {
     DESKTOP = 'desktop',
     MOBILE = 'mobile',
@@ -158,17 +153,11 @@ export interface LeaderboardsModule extends ModuleBase {
 }
 
 export interface StorageModule extends ModuleBase {
-    defaultType: STORAGE_TYPE;
+    get(key: string|string[], tryParseJson?: boolean): any | Promise<unknown>;
 
-    isSupported(options: any): boolean | any;
+    set(key: string|string[], value: any): any;
 
-    isAvailable(options: any): boolean | any;
-
-    get(key: string|string[]): any | Promise<unknown>;
-
-    set(key: string|string[], value: any, options?: any): any;
-
-    delete(key: string|string[], options?: any): any;
+    delete(key: string|string[]): any;
 }
 
 export interface SocialModule extends ModuleBase {

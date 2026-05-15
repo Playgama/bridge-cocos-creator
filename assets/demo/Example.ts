@@ -1,5 +1,5 @@
 import { _decorator, Component, EditBox, Node, RichText } from 'cc';
-import { VISIBILITY_STATE, BANNER_STATE, INTERSTITIAL_STATE, REWARDED_STATE, STORAGE_TYPE, PLATFORM_MESSAGE, EVENT_NAME, BANNER_POSITION } from '../../extensions/playgama-bridge/playgama-bridge.ts';
+import { VISIBILITY_STATE, BANNER_STATE, INTERSTITIAL_STATE, REWARDED_STATE, PLATFORM_MESSAGE, EVENT_NAME, BANNER_POSITION } from '../../extensions/playgama-bridge/playgama-bridge.ts';
 const { ccclass, property } = _decorator;
 
 @ccclass('Example')
@@ -58,8 +58,6 @@ export class Example extends Component {
     @property(RichText)
     adBlockDetectedText: RichText;
 
-    @property(RichText)
-    defaultTypeText: RichText;
     @property(RichText)
     isLocalStorageSupportedText: RichText;
     @property(RichText)
@@ -143,12 +141,6 @@ export class Example extends Component {
 
         this.isBannerSupported.string = 'Is banner supported: ' + bridge.advertisement.isBannerSupported;
 
-        this.defaultTypeText.string = 'Default type: ' + bridge.storage.defaultType;
-
-        this.isLocalStorageSupportedText.string = 'Is local storage supported: ' + bridge.storage.isSupported(STORAGE_TYPE.LOCAL_STORAGE);
-        this.isPlatformInternalSupportedText.string = 'Is platform internal supported: ' + bridge.storage.isSupported(STORAGE_TYPE.PLATFORM_INTERNAL);
-        this.isLocalStorageAvailableText.string = 'Is local storage available: ' + bridge.storage.isAvailable(STORAGE_TYPE.LOCAL_STORAGE);
-        this.isPlatformInternalAvailableText.string = 'Is platform internal available: ' + bridge.storage.isAvailable(STORAGE_TYPE.PLATFORM_INTERNAL);
 
         this.isShareSupported.string = 'Is share supported: ' + bridge.social.isShareSupported;
         this.isInviteFriendsSupported.string = 'Is invite friends supported: ' + bridge.social.isInviteFriendsSupported;
@@ -170,7 +162,6 @@ export class Example extends Component {
         this.isAchievementGetListSupported.string = 'Is achievement get list supported: ' + bridge.achievements.isGetListSupported;
 
         // this.visibilityState.string = 'Visibility state: ' + bridge.game.visibilityState;
-        console.log("Default storage type: ", bridge.storage.defaultType);
     }
 
     sendGameReadyMessage() {
