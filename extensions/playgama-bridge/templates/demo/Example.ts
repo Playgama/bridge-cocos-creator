@@ -160,8 +160,6 @@ export class Example extends Component {
         this.isAchievementSupported.string = 'Is achievement supported: ' + bridge.achievements.isSupported;
         this.isAchievementNativePopupSupported.string = 'Is achievement native popup supported: ' + bridge.achievements.isNativePopupSupported;
         this.isAchievementGetListSupported.string = 'Is achievement get list supported: ' + bridge.achievements.isGetListSupported;
-
-        // this.visibilityState.string = 'Visibility state: ' + bridge.game.visibilityState;
     }
 
     sendGameReadyMessage() {

@@ -185,18 +185,6 @@ export interface SocialModule extends ModuleBase {
     rate(): any | Promise<never>;
 }
 
-export interface GameModule extends ModuleBase {
-    visibilityState: VISIBILITY_STATE;
-
-    on(event: string, listener: (...args: any[]) => void): this;
-
-    once(event: string, listener: (...args: any[]) => void): this;
-
-    off(event: string, listener: (...args: any[]) => void): this;
-
-    emit(event: string, ...args: any[]): boolean;
-}
-
 export interface PlatformModule extends ModuleBase {
     id: string;
     sdk: unknown;
@@ -273,7 +261,6 @@ export interface PlaygamaBridge {
     isInitialized: boolean;
     platform: PlatformModule;
     player: PlayerModule;
-    game: GameModule;
     storage: StorageModule;
     advertisement: AdvertisementModule;
     achievements: AchievementsModule;
