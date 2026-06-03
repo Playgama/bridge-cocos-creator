@@ -195,6 +195,7 @@ export interface PlatformModule extends ModuleBase {
     isAudioEnabled: boolean;
     isGetAllGamesSupported: boolean;
     isGetGameByIdSupported: boolean;
+    isExternalCallsSupported: boolean;
 
     sendMessage(message: PLATFORM_MESSAGE, options?: any): Promise<any>;
 
