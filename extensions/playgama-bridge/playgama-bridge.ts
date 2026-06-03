@@ -219,6 +219,7 @@ export interface PlatformModule extends ModuleBase {
 export interface PlayerModule extends ModuleBase {
     isAuthorizationSupported: boolean;
     isAuthorized: boolean;
+    isGuest: boolean;
     id: number | string;
     name: string;
     photos: string[];
