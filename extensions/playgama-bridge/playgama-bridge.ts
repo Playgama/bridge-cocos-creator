@@ -233,9 +233,9 @@ export interface AchievementsModule extends ModuleBase {
     isGetListSupported: boolean;
     isNativePopupSupported: boolean;
 
-    unlock(options?: any): any | Promise<any>;
-    getList(options?: any): any | Promise<any>;
-    showNativePopup(options?: any): any | Promise<any>;
+    unlock(id: string): any | Promise<any>;
+    getList(): any | Promise<any>;
+    showNativePopup(): any | Promise<any>;
 }
 
 export interface ClipboardModule extends ModuleBase {
