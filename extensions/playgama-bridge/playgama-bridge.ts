@@ -230,12 +230,9 @@ export interface PlayerModule extends ModuleBase {
 
 export interface AchievementsModule extends ModuleBase {
     isSupported: boolean;
-    isGetListSupported: boolean;
-    isNativePopupSupported: boolean;
 
     unlock(id: string): any | Promise<any>;
     getList(): any | Promise<any>;
-    showNativePopup(): any | Promise<any>;
 }
 
 export interface ClipboardModule extends ModuleBase {

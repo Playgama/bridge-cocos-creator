@@ -104,10 +104,6 @@ export class Example extends Component {
 
     @property(RichText)
     isAchievementSupported: RichText;
-    @property(RichText)
-    isAchievementGetListSupported: RichText;
-    @property(RichText)
-    isAchievementNativePopupSupported: RichText;
 
     @property(EditBox)
     achievementIdInputField: EditBox;
@@ -158,8 +154,6 @@ export class Example extends Component {
         this.isRemoteConfigSupported.string = 'Is remote config supported: ' + bridge.remoteConfig.isSupported;
 
         this.isAchievementSupported.string = 'Is achievement supported: ' + bridge.achievements.isSupported;
-        this.isAchievementNativePopupSupported.string = 'Is achievement native popup supported: ' + bridge.achievements.isNativePopupSupported;
-        this.isAchievementGetListSupported.string = 'Is achievement get list supported: ' + bridge.achievements.isGetListSupported;
     }
 
     sendGameReadyMessage() {
@@ -749,17 +743,6 @@ export class Example extends Component {
             })
             .catch(error => {
                 console.error("OnUnlockCompleted, success: false", error);
-            });
-    }
-
-    onShowAchievementNativePopupButtonClicked() {
-
-        bridge.achievements.showNativePopup()
-            .then(() => {
-                console.log("OnShowNativePopupCompleted, success: true");
-            })
-            .catch(error => {
-                console.error("OnShowNativePopupCompleted, success: false", error);
             });
     }
 
