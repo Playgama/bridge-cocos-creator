@@ -104,10 +104,6 @@ export class Example extends Component {
 
     @property(RichText)
     isAchievementSupported: RichText;
-    @property(RichText)
-    isAchievementGetListSupported: RichText;
-    @property(RichText)
-    isAchievementNativePopupSupported: RichText;
 
     @property(EditBox)
     achievementIdInputField: EditBox;
@@ -158,8 +154,6 @@ export class Example extends Component {
         this.isRemoteConfigSupported.string = 'Is remote config supported: ' + bridge.remoteConfig.isSupported;
 
         this.isAchievementSupported.string = 'Is achievement supported: ' + bridge.achievements.isSupported;
-        this.isAchievementNativePopupSupported.string = 'Is achievement native popup supported: ' + bridge.achievements.isNativePopupSupported;
-        this.isAchievementGetListSupported.string = 'Is achievement get list supported: ' + bridge.achievements.isGetListSupported;
     }
 
     sendGameReadyMessage() {
@@ -736,18 +730,9 @@ export class Example extends Component {
 
     onUnlockButtonClicked() {
 
-        const options: Record<string, any> = {};
-        switch (bridge.platform.id) {
-            case "y8":
-                options.achievement = "YOUR_ACHIEVEMENT_NAME";
-                options.achievementkey = "YOUR_ACHIEVEMENT_KEY";
-                break;
-            case "lagged":
-                options.achievement = "YOUR_ACHIEVEMENT_ID";
-                break;
-        }
-
-        bridge.achievements.unlock(options)
+        // Platform-specific data is resolved from the achievements
+        // section of playgama-bridge-config.json by the game-level id
+        bridge.achievements.unlock("YOUR_ACHIEVEMENT_ID")
             .then(() => {
                 console.log("OnUnlockCompleted, success: true");
             })
@@ -756,45 +741,17 @@ export class Example extends Component {
             });
     }
 
-    onShowAchievementNativePopupButtonClicked() {
-
-        const options: Record<string, any> = {};
-
-        bridge.achievements.showNativePopup(options)
-            .then(() => {
-                console.log("OnShowNativePopupCompleted, success: true");
-            })
-            .catch(error => {
-                console.error("OnShowNativePopupCompleted, success: false", error);
-            });
-    }
-
     onGetListButtonClicked() {
 
-        const options: Record<string, any> = {};
-
-        bridge.achievements.getList(options)
+        bridge.achievements.getList()
             .then((list: any[]) => {
                 console.log("OnGetListCompleted, success: true, items:");
 
-                if (bridge.platform.id === "y8") {
-                    for (const item of list) {
-                        console.log("achievementid:", item["achievementid"]);
-                        console.log("achievement:", item["achievement"]);
-                        console.log("achievementkey:", item["achievementkey"]);
-                        console.log("description:", item["description"]);
-                        console.log("icon:", item["icon"]);
-                        console.log("difficulty:", item["difficulty"]);
-                        console.log("secret:", item["secret"]);
-                        console.log("awarded:", item["awarded"]);
-                        console.log("game:", item["game"]);
-                        console.log("link:", item["link"]);
-                        console.log("playerid:", item["playerid"]);
-                        console.log("playername:", item["playername"]);
-                        console.log("lastupdated:", item["lastupdated"]);
-                        console.log("date:", item["date"]);
-                        console.log("rdate:", item["rdate"]);
-                    }
+                for (const item of list) {
+                    console.log("id:", item["id"]);
+                    console.log("name:", item["name"]);
+                    console.log("description:", item["description"]);
+                    console.log("unlocked:", item["unlocked"]);
                 }
             })
             .catch(error => {
