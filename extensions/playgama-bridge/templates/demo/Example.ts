@@ -714,18 +714,13 @@ export class Example extends Component {
     }
 
     onGetRemoteConfigButtonClicked() {
-        const options: Record<string, any> = {};
-
         if (bridge.platform.id === "yandex") {
-            options.clientFeatures = [
-                {
-                    name: "levels",
-                    value: "5",
-                },
-            ];
+            bridge.remoteConfig.setDynamicParameters({
+                levels: "5",
+            });
         }
 
-        bridge.remoteConfig.get(options)
+        bridge.remoteConfig.get()
             .then((values: Record<string, string>) => {
                 console.log("OnRemoteConfigGetCompleted, success: true, items:");
                 for (const key in values) {

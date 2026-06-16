@@ -139,7 +139,8 @@ export interface AdvertisementModule extends ModuleBase {
 
 export interface RemoteConfigModule extends ModuleBase {
    isSupported: boolean;
-   get(options): any;
+   setDynamicParameters(parameters: Record<string, string | number | boolean>): void;
+   get(): any;
 }
 
 export interface LeaderboardsModule extends ModuleBase {
