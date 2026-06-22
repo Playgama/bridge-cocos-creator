@@ -16,12 +16,6 @@ export class Example extends Component {
     @property(RichText)
     serverTime: RichText;
     @property(RichText)
-    isGetAllGamesSupported: RichText;
-    @property(RichText)
-    isGetGameByIdSupported: RichText;
-    @property(EditBox)
-    gameIdInputField: EditBox;
-    @property(RichText)
     isAuthorizationSupported: RichText;
     @property(RichText)
     isAuthorized: RichText;
@@ -126,8 +120,6 @@ export class Example extends Component {
         this.languageText.string = 'Language: ' + bridge.platform.language;
         this.payloadText.string = 'Payload: ' + bridge.platform.payload;
         this.tldText.string = 'TLD: ' + bridge.platform.tld;
-        this.isGetAllGamesSupported.string = 'Is get all games supported: ' + bridge.platform.isGetAllGamesSupported;
-        this.isGetGameByIdSupported.string = 'Is get game by id supported: ' + bridge.platform.isGetGameByIdSupported;
 
 
         this.isAuthorizationSupported.string = 'Is authorization supported: ' + bridge.player.isAuthorizationSupported;
@@ -292,32 +284,6 @@ export class Example extends Component {
 
     onVisibilityStateChanged(state: VISIBILITY_STATE) {
         console.log("Visibility state changed: ", state);
-    }
-
-
-    getAllGames(){
-        bridge.platform.getAllGames()
-            .then((games) => {
-                console.log("All games: ", games);
-            })
-            .catch((error) => {
-                console.error("Failed to get all games:", error);
-            });
-    }
-
-    async getGamyById() {
-        const gameId = this.gameIdInputField.string;
-        try {
-            const game = await bridge.platform.getGameById({ gameId });
-            console.log(`onGetGameByIdCompleted, success: true, game:`);
-            console.log(`App ID: ${game["appID"]}`);
-            console.log(`Title: ${game["title"]}`);
-            console.log(`URL: ${game["url"]}`);
-            console.log(`Cover URL: ${game["coverURL"]}`);
-            console.log(`Icon URL: ${game["iconURL"]}`);
-        } catch (error) {
-            console.error(`onGetGameByIdCompleted, success: false, error:`, error);
-        }
     }
 
     async authorize() {

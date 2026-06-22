@@ -194,8 +194,6 @@ export interface PlatformModule extends ModuleBase {
     tld: string;
 
     isAudioEnabled: boolean;
-    isGetAllGamesSupported: boolean;
-    isGetGameByIdSupported: boolean;
     isExternalCallsSupported: boolean;
 
     sendMessage(message: PLATFORM_MESSAGE, options?: any): Promise<any>;
@@ -203,10 +201,6 @@ export interface PlatformModule extends ModuleBase {
     sendCustomMessage(id: string, options?: any): Promise<any>;
 
     getServerTime(): Promise<number>;
-
-    getAllGames(): Promise<any>;
-
-    getGameById(options?: any): Promise<any>;
 
     on(event: string, listener: (...args: any[]) => void): this;
 
@@ -256,6 +250,25 @@ export interface PaymentsModule extends ModuleBase {
     consumePurchase(id: string): Promise<any>;
 }
 
+export interface Game {
+    id?: string;
+    name?: string;
+    url: string;
+    iconUrl?: string;
+    coverUrl?: string;
+    payload?: any;
+}
+
+export interface CrossPromoModule extends ModuleBase {
+    isVisible: boolean;
+
+    getGamesList(): Promise<Game[]>;
+
+    show(): Promise<void>;
+
+    hide(): void;
+}
+
 export interface PlaygamaBridge {
     version: string;
     isInitialized: boolean;
@@ -270,6 +283,7 @@ export interface PlaygamaBridge {
     remoteConfig: RemoteConfigModule;
     clipboard: ClipboardModule;
     payments: PaymentsModule;
+    crossPromo: CrossPromoModule;
     initialize(): any | Promise<void>;
 }
 
