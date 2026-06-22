@@ -169,7 +169,6 @@ export interface SocialModule extends ModuleBase {
     isAddToHomeScreenSupported: boolean;
     isAddToFavoritesSupported: boolean;
     isRateSupported: boolean;
-    isExternalLinksAllowed: boolean;
 
     inviteFriends(options?: any): any | Promise<never>;
 
@@ -197,6 +196,7 @@ export interface PlatformModule extends ModuleBase {
     isGetAllGamesSupported: boolean;
     isGetGameByIdSupported: boolean;
     isExternalCallsSupported: boolean;
+    isExternalLinksAllowed: boolean;
 
     sendMessage(message: PLATFORM_MESSAGE, options?: any): Promise<any>;
 
