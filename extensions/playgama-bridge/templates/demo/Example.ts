@@ -16,12 +16,6 @@ export class Example extends Component {
     @property(RichText)
     serverTime: RichText;
     @property(RichText)
-    isGetAllGamesSupported: RichText;
-    @property(RichText)
-    isGetGameByIdSupported: RichText;
-    @property(EditBox)
-    gameIdInputField: EditBox;
-    @property(RichText)
     isAuthorizationSupported: RichText;
     @property(RichText)
     isAuthorized: RichText;
@@ -104,10 +98,6 @@ export class Example extends Component {
 
     @property(RichText)
     isAchievementSupported: RichText;
-    @property(RichText)
-    isAchievementGetListSupported: RichText;
-    @property(RichText)
-    isAchievementNativePopupSupported: RichText;
 
     @property(EditBox)
     achievementIdInputField: EditBox;
@@ -130,8 +120,6 @@ export class Example extends Component {
         this.languageText.string = 'Language: ' + bridge.platform.language;
         this.payloadText.string = 'Payload: ' + bridge.platform.payload;
         this.tldText.string = 'TLD: ' + bridge.platform.tld;
-        this.isGetAllGamesSupported.string = 'Is get all games supported: ' + bridge.platform.isGetAllGamesSupported;
-        this.isGetGameByIdSupported.string = 'Is get game by id supported: ' + bridge.platform.isGetGameByIdSupported;
 
 
         this.isAuthorizationSupported.string = 'Is authorization supported: ' + bridge.player.isAuthorizationSupported;
@@ -158,8 +146,6 @@ export class Example extends Component {
         this.isRemoteConfigSupported.string = 'Is remote config supported: ' + bridge.remoteConfig.isSupported;
 
         this.isAchievementSupported.string = 'Is achievement supported: ' + bridge.achievements.isSupported;
-        this.isAchievementNativePopupSupported.string = 'Is achievement native popup supported: ' + bridge.achievements.isNativePopupSupported;
-        this.isAchievementGetListSupported.string = 'Is achievement get list supported: ' + bridge.achievements.isGetListSupported;
     }
 
     sendGameReadyMessage() {
@@ -298,32 +284,6 @@ export class Example extends Component {
 
     onVisibilityStateChanged(state: VISIBILITY_STATE) {
         console.log("Visibility state changed: ", state);
-    }
-
-
-    getAllGames(){
-        bridge.platform.getAllGames()
-            .then((games) => {
-                console.log("All games: ", games);
-            })
-            .catch((error) => {
-                console.error("Failed to get all games:", error);
-            });
-    }
-
-    async getGamyById() {
-        const gameId = this.gameIdInputField.string;
-        try {
-            const game = await bridge.platform.getGameById({ gameId });
-            console.log(`onGetGameByIdCompleted, success: true, game:`);
-            console.log(`App ID: ${game["appID"]}`);
-            console.log(`Title: ${game["title"]}`);
-            console.log(`URL: ${game["url"]}`);
-            console.log(`Cover URL: ${game["coverURL"]}`);
-            console.log(`Icon URL: ${game["iconURL"]}`);
-        } catch (error) {
-            console.error(`onGetGameByIdCompleted, success: false, error:`, error);
-        }
     }
 
     async authorize() {
@@ -719,18 +679,9 @@ export class Example extends Component {
 
     onUnlockButtonClicked() {
 
-        const options: Record<string, any> = {};
-        switch (bridge.platform.id) {
-            case "y8":
-                options.achievement = "YOUR_ACHIEVEMENT_NAME";
-                options.achievementkey = "YOUR_ACHIEVEMENT_KEY";
-                break;
-            case "lagged":
-                options.achievement = "YOUR_ACHIEVEMENT_ID";
-                break;
-        }
-
-        bridge.achievements.unlock(options)
+        // Platform-specific data is resolved from the achievements
+        // section of playgama-bridge-config.json by the game-level id
+        bridge.achievements.unlock("YOUR_ACHIEVEMENT_ID")
             .then(() => {
                 console.log("OnUnlockCompleted, success: true");
             })
@@ -739,45 +690,17 @@ export class Example extends Component {
             });
     }
 
-    onShowAchievementNativePopupButtonClicked() {
-
-        const options: Record<string, any> = {};
-
-        bridge.achievements.showNativePopup(options)
-            .then(() => {
-                console.log("OnShowNativePopupCompleted, success: true");
-            })
-            .catch(error => {
-                console.error("OnShowNativePopupCompleted, success: false", error);
-            });
-    }
-
     onGetListButtonClicked() {
 
-        const options: Record<string, any> = {};
-
-        bridge.achievements.getList(options)
+        bridge.achievements.getList()
             .then((list: any[]) => {
                 console.log("OnGetListCompleted, success: true, items:");
 
-                if (bridge.platform.id === "y8") {
-                    for (const item of list) {
-                        console.log("achievementid:", item["achievementid"]);
-                        console.log("achievement:", item["achievement"]);
-                        console.log("achievementkey:", item["achievementkey"]);
-                        console.log("description:", item["description"]);
-                        console.log("icon:", item["icon"]);
-                        console.log("difficulty:", item["difficulty"]);
-                        console.log("secret:", item["secret"]);
-                        console.log("awarded:", item["awarded"]);
-                        console.log("game:", item["game"]);
-                        console.log("link:", item["link"]);
-                        console.log("playerid:", item["playerid"]);
-                        console.log("playername:", item["playername"]);
-                        console.log("lastupdated:", item["lastupdated"]);
-                        console.log("date:", item["date"]);
-                        console.log("rdate:", item["rdate"]);
-                    }
+                for (const item of list) {
+                    console.log("id:", item["id"]);
+                    console.log("name:", item["name"]);
+                    console.log("description:", item["description"]);
+                    console.log("unlocked:", item["unlocked"]);
                 }
             })
             .catch(error => {

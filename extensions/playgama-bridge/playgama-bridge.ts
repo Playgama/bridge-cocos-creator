@@ -193,8 +193,6 @@ export interface PlatformModule extends ModuleBase {
     tld: string;
 
     isAudioEnabled: boolean;
-    isGetAllGamesSupported: boolean;
-    isGetGameByIdSupported: boolean;
     isExternalCallsSupported: boolean;
     isExternalLinksAllowed: boolean;
 
@@ -203,10 +201,6 @@ export interface PlatformModule extends ModuleBase {
     sendCustomMessage(id: string, options?: any): Promise<any>;
 
     getServerTime(): Promise<number>;
-
-    getAllGames(): Promise<any>;
-
-    getGameById(options?: any): Promise<any>;
 
     on(event: string, listener: (...args: any[]) => void): this;
 
@@ -231,12 +225,9 @@ export interface PlayerModule extends ModuleBase {
 
 export interface AchievementsModule extends ModuleBase {
     isSupported: boolean;
-    isGetListSupported: boolean;
-    isNativePopupSupported: boolean;
 
-    unlock(options?: any): any | Promise<any>;
-    getList(options?: any): any | Promise<any>;
-    showNativePopup(options?: any): any | Promise<any>;
+    unlock(id: string): any | Promise<any>;
+    getList(): any | Promise<any>;
 }
 
 export interface ClipboardModule extends ModuleBase {
@@ -259,6 +250,25 @@ export interface PaymentsModule extends ModuleBase {
     consumePurchase(id: string): Promise<any>;
 }
 
+export interface Game {
+    id?: string;
+    name?: string;
+    url: string;
+    iconUrl?: string;
+    coverUrl?: string;
+    payload?: any;
+}
+
+export interface CrossPromoModule extends ModuleBase {
+    isVisible: boolean;
+
+    getGamesList(): Promise<Game[]>;
+
+    show(): Promise<void>;
+
+    hide(): void;
+}
+
 export interface PlaygamaBridge {
     version: string;
     isInitialized: boolean;
@@ -273,6 +283,7 @@ export interface PlaygamaBridge {
     remoteConfig: RemoteConfigModule;
     clipboard: ClipboardModule;
     payments: PaymentsModule;
+    crossPromo: CrossPromoModule;
     initialize(): any | Promise<void>;
 }
 
