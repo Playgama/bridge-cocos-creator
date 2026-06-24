@@ -137,7 +137,7 @@ export class Example extends Component {
         this.isAddToHomeScreenSupported.string = 'Is add to home screen supported: ' + bridge.social.isAddToHomeScreenSupported;
         this.isAddToFavoritesSupported.string = 'Is add to favorites supported: ' + bridge.social.isAddToFavoritesSupported;
         this.isRateSupported.string = 'Is rate supported: ' + bridge.social.isRateSupported;
-        this.isExternalLinksAllowed.string = 'Is external links allowed: ' + bridge.social.isExternalLinksAllowed;
+        this.isExternalLinksAllowed.string = 'Is external links allowed: ' + bridge.platform.isExternalLinksAllowed;
 
         this.leaderboardsType.string = 'Leaderboards Type: ' + bridge.leaderboards.type;
 
@@ -436,11 +436,13 @@ export class Example extends Component {
     }
 
     onShareButtonClicked() {
-        const options: Record<string, any> = {};
-
-        if (bridge.platform.id === "vk") {
-            options.link = "YOUR_LINK";
-        }
+        // Pass canonical content fields ("text", "image", "url"); the bridge maps them
+        // to each platform (e.g. VK uses "url" as the share link). Platform-specific
+        // defaults can also be set in playgama-bridge-config.json under "social".
+        const options: Record<string, any> = {
+            text: "Check out this game!",
+            url: "YOUR_GAME_URL",
+        };
 
         bridge.social.share(options)
             .then(() => {
@@ -515,32 +517,13 @@ export class Example extends Component {
 
     async onCreatePostButtonClicked() {
 
-        const options: Record<string, any> = {};
-
-        if (bridge.platform.id === "vk") {
-            options.message = "Hello World!";
-            options.attachments = "photo-199747461_457239629";
-        } else if (bridge.platform.id === "ok") {
-            options.media = [
-                {
-                    type: "text",
-                    text: "Hello World!",
-                },
-                {
-                    type: "link",
-                    url: "https://apiok.ru",
-                },
-                {
-                    type: "poll",
-                    question: "Do you like our API?",
-                    answers: [
-                        { text: "Yes" },
-                        { text: "No" },
-                    ],
-                    options: "SingleChoice,AnonymousVoting",
-                },
-            ];
-        }
+        // Canonical "text"/"url"; the bridge assembles the platform-native post (e.g.
+        // OK builds its media attachment). "status" (publish to profile) can be set
+        // per-platform in playgama-bridge-config.json under "social".
+        const options: Record<string, any> = {
+            text: "I'm playing this game!",
+            url: "YOUR_GAME_URL",
+        };
 
         try {
             await bridge.social.createPost(options);
