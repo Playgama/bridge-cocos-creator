@@ -3,7 +3,6 @@ export enum PLATFORM_ID {
     OK = 'ok',
     YANDEX = 'yandex',
     CRAZY_GAMES = 'crazy_games',
-    ABSOLUTE_GAMES = 'absolute_games',
     GAME_DISTRIBUTION = 'game_distribution',
     PLAYGAMA = 'playgama',
     PLAYDECK = 'playdeck',
@@ -23,7 +22,6 @@ export enum EVENT_NAME {
     REWARDED_STATE_CHANGED = 'rewarded_state_changed',
     BANNER_STATE_CHANGED = 'banner_state_changed',
     ADVANCED_BANNERS_STATE_CHANGED = 'advanced_banners_state_changed',
-    VISIBILITY_STATE_CHANGED = 'visibility_state_changed',
     AUDIO_STATE_CHANGED = 'audio_state_changed',
     PAUSE_STATE_CHANGED = 'pause_state_changed',
 }
@@ -47,11 +45,6 @@ export enum PLATFORM_MESSAGE {
     LEVEL_FAILED = 'level_failed',
     LEVEL_PAUSED = 'level_paused',
     LEVEL_RESUMED = 'level_resumed',
-}
-
-export enum VISIBILITY_STATE {
-    VISIBLE = 'visible',
-    HIDDEN = 'hidden'
 }
 
 export enum INTERSTITIAL_STATE {
@@ -139,7 +132,7 @@ export interface AdvertisementModule extends ModuleBase {
 
 export interface RemoteConfigModule extends ModuleBase {
    isSupported: boolean;
-   setDynamicParameters(parameters: Record<string, string | number | boolean>): void;
+   setContext(parameters: Record<string, string | number | boolean>): void;
    get(): any;
 }
 
@@ -224,10 +217,8 @@ export interface PlayerModule extends ModuleBase {
 }
 
 export interface AchievementsModule extends ModuleBase {
-    isSupported: boolean;
-
     unlock(id: string): any | Promise<any>;
-    getList(): any | Promise<any>;
+    getAchievements(): any | Promise<any>;
 }
 
 export interface ClipboardModule extends ModuleBase {
@@ -262,7 +253,7 @@ export interface Game {
 export interface CrossPromoModule extends ModuleBase {
     isVisible: boolean;
 
-    getGamesList(): Promise<Game[]>;
+    getGames(): Promise<Game[]>;
 
     show(): Promise<void>;
 
@@ -298,6 +289,16 @@ export interface TasksModule extends ModuleBase {
     claimReward(taskId: string): Promise<boolean>;
 }
 
+export interface DailyRewardsModule extends ModuleBase {
+    getRewards(): Promise<string[]>;
+
+    getCurrentDay(): Promise<number>;
+
+    getCurrentReward(): Promise<string | null>;
+
+    claimCurrentReward(): Promise<boolean>;
+}
+
 export interface PlaygamaBridge {
     version: string;
     isInitialized: boolean;
@@ -314,6 +315,7 @@ export interface PlaygamaBridge {
     payments: PaymentsModule;
     crossPromo: CrossPromoModule;
     tasks: TasksModule;
+    dailyRewards: DailyRewardsModule;
     initialize(): any | Promise<void>;
 }
 

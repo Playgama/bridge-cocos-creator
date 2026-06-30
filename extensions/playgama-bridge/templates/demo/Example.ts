@@ -1,5 +1,5 @@
 import { _decorator, Component, EditBox, Node, RichText } from 'cc';
-import { VISIBILITY_STATE, BANNER_STATE, INTERSTITIAL_STATE, REWARDED_STATE, PLATFORM_MESSAGE, EVENT_NAME, BANNER_POSITION } from '../../extensions/playgama-bridge/playgama-bridge.ts';
+import { BANNER_STATE, INTERSTITIAL_STATE, REWARDED_STATE, PLATFORM_MESSAGE, EVENT_NAME, BANNER_POSITION } from '../../extensions/playgama-bridge/playgama-bridge.ts';
 const { ccclass, property } = _decorator;
 
 @ccclass('Example')
@@ -96,9 +96,6 @@ export class Example extends Component {
     isRemoteConfigSupported: RichText;
 
 
-    @property(RichText)
-    isAchievementSupported: RichText;
-
     @property(EditBox)
     achievementIdInputField: EditBox;
     @property(EditBox)
@@ -115,6 +112,9 @@ export class Example extends Component {
     taskIdInputField: EditBox;
     @property(RichText)
     tasksResultText: RichText;
+
+    @property(RichText)
+    dailyRewardsResultText: RichText;
 
 
 
@@ -153,8 +153,6 @@ export class Example extends Component {
         this.isPaymentsSupported.string = 'Is payments supported: ' + bridge.payments.isSupported;
 
         this.isRemoteConfigSupported.string = 'Is remote config supported: ' + bridge.remoteConfig.isSupported;
-
-        this.isAchievementSupported.string = 'Is achievement supported: ' + bridge.achievements.isSupported;
     }
 
     sendGameReadyMessage() {
@@ -289,10 +287,6 @@ export class Example extends Component {
             .catch((error) => {
                 console.error("Failed to get server time:", error);
             });
-    }
-
-    onVisibilityStateChanged(state: VISIBILITY_STATE) {
-        console.log("Visibility state changed: ", state);
     }
 
     async authorize() {
@@ -667,7 +661,7 @@ export class Example extends Component {
 
     onGetRemoteConfigButtonClicked() {
         if (bridge.platform.id === "yandex") {
-            bridge.remoteConfig.setDynamicParameters({
+            bridge.remoteConfig.setContext({
                 levels: "5",
             });
         }
@@ -701,7 +695,7 @@ export class Example extends Component {
 
     onGetListButtonClicked() {
 
-        bridge.achievements.getList()
+        bridge.achievements.getAchievements()
             .then((list: any[]) => {
                 console.log("OnGetListCompleted, success: true, items:");
 
@@ -786,6 +780,81 @@ export class Example extends Component {
                 console.error("OnClaimRewardCompleted, success: false", error);
                 if (this.tasksResultText) {
                     this.tasksResultText.string = "claimReward error: " + error;
+                }
+            });
+    }
+
+    onGetRewardsButtonClicked() {
+
+        bridge.dailyRewards.getRewards()
+            .then((rewards: string[]) => {
+                console.log("OnGetRewardsCompleted, success: true, rewards:");
+
+                const lines: string[] = [];
+                for (const reward of rewards) {
+                    console.log("reward:", reward);
+                    lines.push(reward);
+                }
+
+                if (this.dailyRewardsResultText) {
+                    this.dailyRewardsResultText.string = lines.length > 0 ? lines.join("\n") : "no rewards";
+                }
+            })
+            .catch(error => {
+                console.error("OnGetRewardsCompleted, success: false", error);
+                if (this.dailyRewardsResultText) {
+                    this.dailyRewardsResultText.string = "getRewards error: " + error;
+                }
+            });
+    }
+
+    onGetCurrentDayButtonClicked() {
+
+        bridge.dailyRewards.getCurrentDay()
+            .then((day: number) => {
+                console.log("OnGetCurrentDayCompleted, day:", day);
+                if (this.dailyRewardsResultText) {
+                    this.dailyRewardsResultText.string = "current day: " + day;
+                }
+            })
+            .catch(error => {
+                console.error("OnGetCurrentDayCompleted, success: false", error);
+                if (this.dailyRewardsResultText) {
+                    this.dailyRewardsResultText.string = "getCurrentDay error: " + error;
+                }
+            });
+    }
+
+    onGetCurrentRewardButtonClicked() {
+
+        bridge.dailyRewards.getCurrentReward()
+            .then((reward: string | null) => {
+                console.log("OnGetCurrentRewardCompleted, reward:", reward);
+                if (this.dailyRewardsResultText) {
+                    this.dailyRewardsResultText.string = "current reward: " + (reward !== null ? reward : "none");
+                }
+            })
+            .catch(error => {
+                console.error("OnGetCurrentRewardCompleted, success: false", error);
+                if (this.dailyRewardsResultText) {
+                    this.dailyRewardsResultText.string = "getCurrentReward error: " + error;
+                }
+            });
+    }
+
+    onClaimCurrentRewardButtonClicked() {
+
+        bridge.dailyRewards.claimCurrentReward()
+            .then((claimed: boolean) => {
+                console.log("OnClaimCurrentRewardCompleted, claimed:", claimed);
+                if (this.dailyRewardsResultText) {
+                    this.dailyRewardsResultText.string = "claimed: " + claimed;
+                }
+            })
+            .catch(error => {
+                console.error("OnClaimCurrentRewardCompleted, success: false", error);
+                if (this.dailyRewardsResultText) {
+                    this.dailyRewardsResultText.string = "claimCurrentReward error: " + error;
                 }
             });
     }
