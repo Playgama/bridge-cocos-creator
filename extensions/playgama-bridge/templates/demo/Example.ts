@@ -107,6 +107,15 @@ export class Example extends Component {
     @property(EditBox)
     sendMessageOptionsInputField: EditBox;
 
+    @property(EditBox)
+    taskMetricInputField: EditBox;
+    @property(EditBox)
+    taskAmountInputField: EditBox;
+    @property(EditBox)
+    taskIdInputField: EditBox;
+    @property(RichText)
+    tasksResultText: RichText;
+
 
 
 
@@ -706,6 +715,78 @@ export class Example extends Component {
             .catch(error => {
                 console.error("OnGetListCompleted, success: false", error);
 
+            });
+    }
+
+    onGetTasksButtonClicked() {
+
+        bridge.tasks.getTasks()
+            .then((tasks: any[]) => {
+                console.log("OnGetTasksCompleted, success: true, tasks:");
+
+                const lines: string[] = [];
+                for (const task of tasks) {
+                    console.log("id:", task["id"], "type:", task["type"], "completed:", task["completed"], "claimed:", task["claimed"]);
+                    lines.push(task["id"] + " (" + task["type"] + ") completed: " + task["completed"] + " claimed: " + task["claimed"]);
+
+                    for (const target of task["targets"]) {
+                        console.log("  target:", target["id"], target["progress"] + "/" + target["amount"]);
+                        lines.push("  " + target["id"] + ": " + target["progress"] + "/" + target["amount"]);
+                    }
+                }
+
+                if (this.tasksResultText) {
+                    this.tasksResultText.string = lines.length > 0 ? lines.join("\n") : "no tasks";
+                }
+            })
+            .catch(error => {
+                console.error("OnGetTasksCompleted, success: false", error);
+                if (this.tasksResultText) {
+                    this.tasksResultText.string = "getTasks error: " + error;
+                }
+            });
+    }
+
+    onAddProgressButtonClicked() {
+
+        // Reads the input fields when wired; otherwise falls back to defaults.
+        const metric = this.taskMetricInputField?.string || "enemy_killed";
+        const amount = parseInt(this.taskAmountInputField?.string) || 1;
+
+        // addProgress resolves without data; read updated state via getTasks()
+        bridge.tasks.addProgress(metric, amount)
+            .then(() => {
+                console.log("OnAddProgressCompleted, success: true");
+                if (this.tasksResultText) {
+                    this.tasksResultText.string = "added +" + amount + " to '" + metric + "'";
+                }
+            })
+            .catch(error => {
+                console.error("OnAddProgressCompleted, success: false", error);
+                if (this.tasksResultText) {
+                    this.tasksResultText.string = "addProgress error: " + error;
+                }
+            });
+    }
+
+    onClaimRewardButtonClicked() {
+
+        // Reads the input field when wired; otherwise falls back to a default.
+        const taskId = this.taskIdInputField?.string || "daily_kills";
+
+        // claimReward resolves to a boolean; rewards to grant are on task.rewards
+        bridge.tasks.claimReward(taskId)
+            .then((claimed: boolean) => {
+                console.log("OnClaimRewardCompleted, claimed:", claimed);
+                if (this.tasksResultText) {
+                    this.tasksResultText.string = "claim '" + taskId + "': " + claimed;
+                }
+            })
+            .catch(error => {
+                console.error("OnClaimRewardCompleted, success: false", error);
+                if (this.tasksResultText) {
+                    this.tasksResultText.string = "claimReward error: " + error;
+                }
             });
     }
 

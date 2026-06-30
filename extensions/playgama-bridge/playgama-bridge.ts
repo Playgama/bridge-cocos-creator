@@ -269,6 +269,35 @@ export interface CrossPromoModule extends ModuleBase {
     hide(): void;
 }
 
+export interface TaskTarget {
+    id: string;
+    amount: number;
+    progress: number;
+    completed: boolean;
+}
+
+export interface TaskReward {
+    id: string;
+    amount: number;
+}
+
+export interface Task {
+    id: string;
+    type: string;
+    targets: TaskTarget[];
+    rewards: TaskReward[];
+    completed: boolean;
+    claimed: boolean;
+}
+
+export interface TasksModule extends ModuleBase {
+    getTasks(): Promise<Task[]>;
+
+    addProgress(metric: string, amount?: number): Promise<void>;
+
+    claimReward(taskId: string): Promise<boolean>;
+}
+
 export interface PlaygamaBridge {
     version: string;
     isInitialized: boolean;
@@ -284,6 +313,7 @@ export interface PlaygamaBridge {
     clipboard: ClipboardModule;
     payments: PaymentsModule;
     crossPromo: CrossPromoModule;
+    tasks: TasksModule;
     initialize(): any | Promise<void>;
 }
 
