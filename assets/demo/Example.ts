@@ -1,5 +1,5 @@
 import { _decorator, Component, EditBox, Node, RichText } from 'cc';
-import { VISIBILITY_STATE, BANNER_STATE, INTERSTITIAL_STATE, REWARDED_STATE, STORAGE_TYPE, PLATFORM_MESSAGE, EVENT_NAME, BANNER_POSITION } from '../../extensions/playgama-bridge/playgama-bridge.ts';
+import { BANNER_STATE, INTERSTITIAL_STATE, REWARDED_STATE, PLATFORM_MESSAGE, EVENT_NAME, BANNER_POSITION } from '../../extensions/playgama-bridge/playgama-bridge.ts';
 const { ccclass, property } = _decorator;
 
 @ccclass('Example')
@@ -15,12 +15,6 @@ export class Example extends Component {
     tldText: RichText;
     @property(RichText)
     serverTime: RichText;
-    @property(RichText)
-    isGetAllGamesSupported: RichText;
-    @property(RichText)
-    isGetGameByIdSupported: RichText;
-    @property(EditBox)
-    gameIdInputField: EditBox;
     @property(RichText)
     isAuthorizationSupported: RichText;
     @property(RichText)
@@ -58,8 +52,6 @@ export class Example extends Component {
     @property(RichText)
     adBlockDetectedText: RichText;
 
-    @property(RichText)
-    defaultTypeText: RichText;
     @property(RichText)
     isLocalStorageSupportedText: RichText;
     @property(RichText)
@@ -104,13 +96,6 @@ export class Example extends Component {
     isRemoteConfigSupported: RichText;
 
 
-    @property(RichText)
-    isAchievementSupported: RichText;
-    @property(RichText)
-    isAchievementGetListSupported: RichText;
-    @property(RichText)
-    isAchievementNativePopupSupported: RichText;
-
     @property(EditBox)
     achievementIdInputField: EditBox;
     @property(EditBox)
@@ -118,6 +103,18 @@ export class Example extends Component {
 
     @property(EditBox)
     sendMessageOptionsInputField: EditBox;
+
+    @property(EditBox)
+    taskMetricInputField: EditBox;
+    @property(EditBox)
+    taskAmountInputField: EditBox;
+    @property(EditBox)
+    taskIdInputField: EditBox;
+    @property(RichText)
+    tasksResultText: RichText;
+
+    @property(RichText)
+    dailyRewardsResultText: RichText;
 
 
 
@@ -132,8 +129,6 @@ export class Example extends Component {
         this.languageText.string = 'Language: ' + bridge.platform.language;
         this.payloadText.string = 'Payload: ' + bridge.platform.payload;
         this.tldText.string = 'TLD: ' + bridge.platform.tld;
-        this.isGetAllGamesSupported.string = 'Is get all games supported: ' + bridge.platform.isGetAllGamesSupported;
-        this.isGetGameByIdSupported.string = 'Is get game by id supported: ' + bridge.platform.isGetGameByIdSupported;
 
 
         this.isAuthorizationSupported.string = 'Is authorization supported: ' + bridge.player.isAuthorizationSupported;
@@ -143,12 +138,6 @@ export class Example extends Component {
 
         this.isBannerSupported.string = 'Is banner supported: ' + bridge.advertisement.isBannerSupported;
 
-        this.defaultTypeText.string = 'Default type: ' + bridge.storage.defaultType;
-
-        this.isLocalStorageSupportedText.string = 'Is local storage supported: ' + bridge.storage.isSupported(STORAGE_TYPE.LOCAL_STORAGE);
-        this.isPlatformInternalSupportedText.string = 'Is platform internal supported: ' + bridge.storage.isSupported(STORAGE_TYPE.PLATFORM_INTERNAL);
-        this.isLocalStorageAvailableText.string = 'Is local storage available: ' + bridge.storage.isAvailable(STORAGE_TYPE.LOCAL_STORAGE);
-        this.isPlatformInternalAvailableText.string = 'Is platform internal available: ' + bridge.storage.isAvailable(STORAGE_TYPE.PLATFORM_INTERNAL);
 
         this.isShareSupported.string = 'Is share supported: ' + bridge.social.isShareSupported;
         this.isInviteFriendsSupported.string = 'Is invite friends supported: ' + bridge.social.isInviteFriendsSupported;
@@ -157,20 +146,13 @@ export class Example extends Component {
         this.isAddToHomeScreenSupported.string = 'Is add to home screen supported: ' + bridge.social.isAddToHomeScreenSupported;
         this.isAddToFavoritesSupported.string = 'Is add to favorites supported: ' + bridge.social.isAddToFavoritesSupported;
         this.isRateSupported.string = 'Is rate supported: ' + bridge.social.isRateSupported;
-        this.isExternalLinksAllowed.string = 'Is external links allowed: ' + bridge.social.isExternalLinksAllowed;
+        this.isExternalLinksAllowed.string = 'Is external links allowed: ' + bridge.platform.isExternalLinksAllowed;
 
         this.leaderboardsType.string = 'Leaderboards Type: ' + bridge.leaderboards.type;
 
         this.isPaymentsSupported.string = 'Is payments supported: ' + bridge.payments.isSupported;
 
         this.isRemoteConfigSupported.string = 'Is remote config supported: ' + bridge.remoteConfig.isSupported;
-
-        this.isAchievementSupported.string = 'Is achievement supported: ' + bridge.achievements.isSupported;
-        this.isAchievementNativePopupSupported.string = 'Is achievement native popup supported: ' + bridge.achievements.isNativePopupSupported;
-        this.isAchievementGetListSupported.string = 'Is achievement get list supported: ' + bridge.achievements.isGetListSupported;
-
-        // this.visibilityState.string = 'Visibility state: ' + bridge.game.visibilityState;
-        console.log("Default storage type: ", bridge.storage.defaultType);
     }
 
     sendGameReadyMessage() {
@@ -305,36 +287,6 @@ export class Example extends Component {
             .catch((error) => {
                 console.error("Failed to get server time:", error);
             });
-    }
-
-    onVisibilityStateChanged(state: VISIBILITY_STATE) {
-        console.log("Visibility state changed: ", state);
-    }
-
-
-    getAllGames(){
-        bridge.platform.getAllGames()
-            .then((games) => {
-                console.log("All games: ", games);
-            })
-            .catch((error) => {
-                console.error("Failed to get all games:", error);
-            });
-    }
-
-    async getGamyById() {
-        const gameId = this.gameIdInputField.string;
-        try {
-            const game = await bridge.platform.getGameById({ gameId });
-            console.log(`onGetGameByIdCompleted, success: true, game:`);
-            console.log(`App ID: ${game["appID"]}`);
-            console.log(`Title: ${game["title"]}`);
-            console.log(`URL: ${game["url"]}`);
-            console.log(`Cover URL: ${game["coverURL"]}`);
-            console.log(`Icon URL: ${game["iconURL"]}`);
-        } catch (error) {
-            console.error(`onGetGameByIdCompleted, success: false, error:`, error);
-        }
     }
 
     async authorize() {
@@ -487,11 +439,13 @@ export class Example extends Component {
     }
 
     onShareButtonClicked() {
-        const options: Record<string, any> = {};
-
-        if (bridge.platform.id === "vk") {
-            options.link = "YOUR_LINK";
-        }
+        // Pass canonical content fields ("text", "image", "url"); the bridge maps them
+        // to each platform (e.g. VK uses "url" as the share link). Platform-specific
+        // defaults can also be set in playgama-bridge-config.json under "social".
+        const options: Record<string, any> = {
+            text: "Check out this game!",
+            url: "YOUR_GAME_URL",
+        };
 
         bridge.social.share(options)
             .then(() => {
@@ -566,32 +520,13 @@ export class Example extends Component {
 
     async onCreatePostButtonClicked() {
 
-        const options: Record<string, any> = {};
-
-        if (bridge.platform.id === "vk") {
-            options.message = "Hello World!";
-            options.attachments = "photo-199747461_457239629";
-        } else if (bridge.platform.id === "ok") {
-            options.media = [
-                {
-                    type: "text",
-                    text: "Hello World!",
-                },
-                {
-                    type: "link",
-                    url: "https://apiok.ru",
-                },
-                {
-                    type: "poll",
-                    question: "Do you like our API?",
-                    answers: [
-                        { text: "Yes" },
-                        { text: "No" },
-                    ],
-                    options: "SingleChoice,AnonymousVoting",
-                },
-            ];
-        }
+        // Canonical "text"/"url"; the bridge assembles the platform-native post (e.g.
+        // OK builds its media attachment). "status" (publish to profile) can be set
+        // per-platform in playgama-bridge-config.json under "social".
+        const options: Record<string, any> = {
+            text: "I'm playing this game!",
+            url: "YOUR_GAME_URL",
+        };
 
         try {
             await bridge.social.createPost(options);
@@ -725,18 +660,13 @@ export class Example extends Component {
     }
 
     onGetRemoteConfigButtonClicked() {
-        const options: Record<string, any> = {};
-
         if (bridge.platform.id === "yandex") {
-            options.clientFeatures = [
-                {
-                    name: "levels",
-                    value: "5",
-                },
-            ];
+            bridge.remoteConfig.setContext({
+                levels: "5",
+            });
         }
 
-        bridge.remoteConfig.get(options)
+        bridge.remoteConfig.get()
             .then((values: Record<string, string>) => {
                 console.log("OnRemoteConfigGetCompleted, success: true, items:");
                 for (const key in values) {
@@ -752,18 +682,9 @@ export class Example extends Component {
 
     onUnlockButtonClicked() {
 
-        const options: Record<string, any> = {};
-        switch (bridge.platform.id) {
-            case "y8":
-                options.achievement = "YOUR_ACHIEVEMENT_NAME";
-                options.achievementkey = "YOUR_ACHIEVEMENT_KEY";
-                break;
-            case "lagged":
-                options.achievement = "YOUR_ACHIEVEMENT_ID";
-                break;
-        }
-
-        bridge.achievements.unlock(options)
+        // Platform-specific data is resolved from the achievements
+        // section of playgama-bridge-config.json by the game-level id
+        bridge.achievements.unlock("YOUR_ACHIEVEMENT_ID")
             .then(() => {
                 console.log("OnUnlockCompleted, success: true");
             })
@@ -772,50 +693,169 @@ export class Example extends Component {
             });
     }
 
-    onShowAchievementNativePopupButtonClicked() {
-
-        const options: Record<string, any> = {};
-
-        bridge.achievements.showNativePopup(options)
-            .then(() => {
-                console.log("OnShowNativePopupCompleted, success: true");
-            })
-            .catch(error => {
-                console.error("OnShowNativePopupCompleted, success: false", error);
-            });
-    }
-
     onGetListButtonClicked() {
 
-        const options: Record<string, any> = {};
-
-        bridge.achievements.getList(options)
+        bridge.achievements.getAchievements()
             .then((list: any[]) => {
                 console.log("OnGetListCompleted, success: true, items:");
 
-                if (bridge.platform.id === "y8") {
-                    for (const item of list) {
-                        console.log("achievementid:", item["achievementid"]);
-                        console.log("achievement:", item["achievement"]);
-                        console.log("achievementkey:", item["achievementkey"]);
-                        console.log("description:", item["description"]);
-                        console.log("icon:", item["icon"]);
-                        console.log("difficulty:", item["difficulty"]);
-                        console.log("secret:", item["secret"]);
-                        console.log("awarded:", item["awarded"]);
-                        console.log("game:", item["game"]);
-                        console.log("link:", item["link"]);
-                        console.log("playerid:", item["playerid"]);
-                        console.log("playername:", item["playername"]);
-                        console.log("lastupdated:", item["lastupdated"]);
-                        console.log("date:", item["date"]);
-                        console.log("rdate:", item["rdate"]);
-                    }
+                for (const item of list) {
+                    console.log("id:", item["id"]);
+                    console.log("name:", item["name"]);
+                    console.log("description:", item["description"]);
+                    console.log("unlocked:", item["unlocked"]);
                 }
             })
             .catch(error => {
                 console.error("OnGetListCompleted, success: false", error);
 
+            });
+    }
+
+    onGetTasksButtonClicked() {
+
+        bridge.tasks.getTasks()
+            .then((tasks: any[]) => {
+                console.log("OnGetTasksCompleted, success: true, tasks:");
+
+                const lines: string[] = [];
+                for (const task of tasks) {
+                    console.log("id:", task["id"], "type:", task["type"], "completed:", task["completed"], "claimed:", task["claimed"]);
+                    lines.push(task["id"] + " (" + task["type"] + ") completed: " + task["completed"] + " claimed: " + task["claimed"]);
+
+                    for (const target of task["targets"]) {
+                        console.log("  target:", target["id"], target["progress"] + "/" + target["amount"]);
+                        lines.push("  " + target["id"] + ": " + target["progress"] + "/" + target["amount"]);
+                    }
+                }
+
+                if (this.tasksResultText) {
+                    this.tasksResultText.string = lines.length > 0 ? lines.join("\n") : "no tasks";
+                }
+            })
+            .catch(error => {
+                console.error("OnGetTasksCompleted, success: false", error);
+                if (this.tasksResultText) {
+                    this.tasksResultText.string = "getTasks error: " + error;
+                }
+            });
+    }
+
+    onAddProgressButtonClicked() {
+
+        // Reads the input fields when wired; otherwise falls back to defaults.
+        const metric = this.taskMetricInputField?.string || "enemy_killed";
+        const amount = parseInt(this.taskAmountInputField?.string) || 1;
+
+        // addProgress resolves without data; read updated state via getTasks()
+        bridge.tasks.addProgress(metric, amount)
+            .then(() => {
+                console.log("OnAddProgressCompleted, success: true");
+                if (this.tasksResultText) {
+                    this.tasksResultText.string = "added +" + amount + " to '" + metric + "'";
+                }
+            })
+            .catch(error => {
+                console.error("OnAddProgressCompleted, success: false", error);
+                if (this.tasksResultText) {
+                    this.tasksResultText.string = "addProgress error: " + error;
+                }
+            });
+    }
+
+    onClaimRewardButtonClicked() {
+
+        // Reads the input field when wired; otherwise falls back to a default.
+        const taskId = this.taskIdInputField?.string || "daily_kills";
+
+        // claimReward resolves to a boolean; rewards to grant are on task.rewards
+        bridge.tasks.claimReward(taskId)
+            .then((claimed: boolean) => {
+                console.log("OnClaimRewardCompleted, claimed:", claimed);
+                if (this.tasksResultText) {
+                    this.tasksResultText.string = "claim '" + taskId + "': " + claimed;
+                }
+            })
+            .catch(error => {
+                console.error("OnClaimRewardCompleted, success: false", error);
+                if (this.tasksResultText) {
+                    this.tasksResultText.string = "claimReward error: " + error;
+                }
+            });
+    }
+
+    onGetRewardsButtonClicked() {
+
+        bridge.dailyRewards.getRewards()
+            .then((rewards: string[]) => {
+                console.log("OnGetRewardsCompleted, success: true, rewards:");
+
+                const lines: string[] = [];
+                for (const reward of rewards) {
+                    console.log("reward:", reward);
+                    lines.push(reward);
+                }
+
+                if (this.dailyRewardsResultText) {
+                    this.dailyRewardsResultText.string = lines.length > 0 ? lines.join("\n") : "no rewards";
+                }
+            })
+            .catch(error => {
+                console.error("OnGetRewardsCompleted, success: false", error);
+                if (this.dailyRewardsResultText) {
+                    this.dailyRewardsResultText.string = "getRewards error: " + error;
+                }
+            });
+    }
+
+    onGetCurrentDayButtonClicked() {
+
+        bridge.dailyRewards.getCurrentDay()
+            .then((day: number) => {
+                console.log("OnGetCurrentDayCompleted, day:", day);
+                if (this.dailyRewardsResultText) {
+                    this.dailyRewardsResultText.string = "current day: " + day;
+                }
+            })
+            .catch(error => {
+                console.error("OnGetCurrentDayCompleted, success: false", error);
+                if (this.dailyRewardsResultText) {
+                    this.dailyRewardsResultText.string = "getCurrentDay error: " + error;
+                }
+            });
+    }
+
+    onGetCurrentRewardButtonClicked() {
+
+        bridge.dailyRewards.getCurrentReward()
+            .then((reward: string | null) => {
+                console.log("OnGetCurrentRewardCompleted, reward:", reward);
+                if (this.dailyRewardsResultText) {
+                    this.dailyRewardsResultText.string = "current reward: " + (reward !== null ? reward : "none");
+                }
+            })
+            .catch(error => {
+                console.error("OnGetCurrentRewardCompleted, success: false", error);
+                if (this.dailyRewardsResultText) {
+                    this.dailyRewardsResultText.string = "getCurrentReward error: " + error;
+                }
+            });
+    }
+
+    onClaimCurrentRewardButtonClicked() {
+
+        bridge.dailyRewards.claimCurrentReward()
+            .then((claimed: boolean) => {
+                console.log("OnClaimCurrentRewardCompleted, claimed:", claimed);
+                if (this.dailyRewardsResultText) {
+                    this.dailyRewardsResultText.string = "claimed: " + claimed;
+                }
+            })
+            .catch(error => {
+                console.error("OnClaimCurrentRewardCompleted, success: false", error);
+                if (this.dailyRewardsResultText) {
+                    this.dailyRewardsResultText.string = "claimCurrentReward error: " + error;
+                }
             });
     }
 

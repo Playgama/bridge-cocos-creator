@@ -3,7 +3,6 @@ export enum PLATFORM_ID {
     OK = 'ok',
     YANDEX = 'yandex',
     CRAZY_GAMES = 'crazy_games',
-    ABSOLUTE_GAMES = 'absolute_games',
     GAME_DISTRIBUTION = 'game_distribution',
     PLAYGAMA = 'playgama',
     PLAYDECK = 'playdeck',
@@ -23,14 +22,8 @@ export enum EVENT_NAME {
     REWARDED_STATE_CHANGED = 'rewarded_state_changed',
     BANNER_STATE_CHANGED = 'banner_state_changed',
     ADVANCED_BANNERS_STATE_CHANGED = 'advanced_banners_state_changed',
-    VISIBILITY_STATE_CHANGED = 'visibility_state_changed',
     AUDIO_STATE_CHANGED = 'audio_state_changed',
     PAUSE_STATE_CHANGED = 'pause_state_changed',
-}
-
-export enum STORAGE_TYPE {
-    LOCAL_STORAGE = 'local_storage',
-    PLATFORM_INTERNAL = 'platform_internal'
 }
 
 export enum DEVICE_TYPE {
@@ -52,11 +45,6 @@ export enum PLATFORM_MESSAGE {
     LEVEL_FAILED = 'level_failed',
     LEVEL_PAUSED = 'level_paused',
     LEVEL_RESUMED = 'level_resumed',
-}
-
-export enum VISIBILITY_STATE {
-    VISIBLE = 'visible',
-    HIDDEN = 'hidden'
 }
 
 export enum INTERSTITIAL_STATE {
@@ -144,7 +132,8 @@ export interface AdvertisementModule extends ModuleBase {
 
 export interface RemoteConfigModule extends ModuleBase {
    isSupported: boolean;
-   get(options): any;
+   setContext(parameters: Record<string, string | number | boolean>): void;
+   get(): any;
 }
 
 export interface LeaderboardsModule extends ModuleBase {
@@ -158,17 +147,11 @@ export interface LeaderboardsModule extends ModuleBase {
 }
 
 export interface StorageModule extends ModuleBase {
-    defaultType: STORAGE_TYPE;
+    get(key: string|string[], tryParseJson?: boolean): any | Promise<unknown>;
 
-    isSupported(options: any): boolean | any;
+    set(key: string|string[], value: any): any;
 
-    isAvailable(options: any): boolean | any;
-
-    get(key: string|string[]): any | Promise<unknown>;
-
-    set(key: string|string[], value: any, options?: any): any;
-
-    delete(key: string|string[], options?: any): any;
+    delete(key: string|string[]): any;
 }
 
 export interface SocialModule extends ModuleBase {
@@ -179,7 +162,6 @@ export interface SocialModule extends ModuleBase {
     isAddToHomeScreenSupported: boolean;
     isAddToFavoritesSupported: boolean;
     isRateSupported: boolean;
-    isExternalLinksAllowed: boolean;
 
     inviteFriends(options?: any): any | Promise<never>;
 
@@ -196,18 +178,6 @@ export interface SocialModule extends ModuleBase {
     rate(): any | Promise<never>;
 }
 
-export interface GameModule extends ModuleBase {
-    visibilityState: VISIBILITY_STATE;
-
-    on(event: string, listener: (...args: any[]) => void): this;
-
-    once(event: string, listener: (...args: any[]) => void): this;
-
-    off(event: string, listener: (...args: any[]) => void): this;
-
-    emit(event: string, ...args: any[]): boolean;
-}
-
 export interface PlatformModule extends ModuleBase {
     id: string;
     sdk: unknown;
@@ -216,18 +186,14 @@ export interface PlatformModule extends ModuleBase {
     tld: string;
 
     isAudioEnabled: boolean;
-    isGetAllGamesSupported: boolean;
-    isGetGameByIdSupported: boolean;
+    isExternalCallsSupported: boolean;
+    isExternalLinksAllowed: boolean;
 
     sendMessage(message: PLATFORM_MESSAGE, options?: any): Promise<any>;
 
     sendCustomMessage(id: string, options?: any): Promise<any>;
 
     getServerTime(): Promise<number>;
-
-    getAllGames(): Promise<any>;
-
-    getGameById(options?: any): Promise<any>;
 
     on(event: string, listener: (...args: any[]) => void): this;
 
@@ -241,6 +207,7 @@ export interface PlatformModule extends ModuleBase {
 export interface PlayerModule extends ModuleBase {
     isAuthorizationSupported: boolean;
     isAuthorized: boolean;
+    isGuest: boolean;
     id: number | string;
     name: string;
     photos: string[];
@@ -250,13 +217,8 @@ export interface PlayerModule extends ModuleBase {
 }
 
 export interface AchievementsModule extends ModuleBase {
-    isSupported: boolean;
-    isGetListSupported: boolean;
-    isNativePopupSupported: boolean;
-
-    unlock(options?: any): any | Promise<any>;
-    getList(options?: any): any | Promise<any>;
-    showNativePopup(options?: any): any | Promise<any>;
+    unlock(id: string): any | Promise<any>;
+    getAchievements(): any | Promise<any>;
 }
 
 export interface ClipboardModule extends ModuleBase {
@@ -279,12 +241,69 @@ export interface PaymentsModule extends ModuleBase {
     consumePurchase(id: string): Promise<any>;
 }
 
+export interface Game {
+    id?: string;
+    name?: string;
+    url: string;
+    iconUrl?: string;
+    coverUrl?: string;
+    payload?: any;
+}
+
+export interface CrossPromoModule extends ModuleBase {
+    isVisible: boolean;
+
+    getGames(): Promise<Game[]>;
+
+    show(): Promise<void>;
+
+    hide(): void;
+}
+
+export interface TaskTarget {
+    id: string;
+    amount: number;
+    progress: number;
+    completed: boolean;
+}
+
+export interface TaskReward {
+    id: string;
+    amount: number;
+}
+
+export interface Task {
+    id: string;
+    type: string;
+    targets: TaskTarget[];
+    rewards: TaskReward[];
+    completed: boolean;
+    claimed: boolean;
+}
+
+export interface TasksModule extends ModuleBase {
+    getTasks(): Promise<Task[]>;
+
+    addProgress(metric: string, amount?: number): Promise<void>;
+
+    claimReward(taskId: string): Promise<boolean>;
+}
+
+export interface DailyRewardsModule extends ModuleBase {
+    getRewards(): Promise<string[]>;
+
+    getCurrentDay(): Promise<number>;
+
+    getCurrentReward(): Promise<string | null>;
+
+    claimCurrentReward(): Promise<boolean>;
+}
+
 export interface PlaygamaBridge {
     version: string;
     isInitialized: boolean;
     platform: PlatformModule;
     player: PlayerModule;
-    game: GameModule;
     storage: StorageModule;
     advertisement: AdvertisementModule;
     achievements: AchievementsModule;
@@ -294,6 +313,9 @@ export interface PlaygamaBridge {
     remoteConfig: RemoteConfigModule;
     clipboard: ClipboardModule;
     payments: PaymentsModule;
+    crossPromo: CrossPromoModule;
+    tasks: TasksModule;
+    dailyRewards: DailyRewardsModule;
     initialize(): any | Promise<void>;
 }
 
