@@ -21,28 +21,6 @@ module.exports = {
     console.log(`[${PACKAGE_NAME}] Extension unloaded`);
   },
 
-  async onAfterBuild(options, result) {
-    try {
-      if (options.platform !== 'web-mobile') return;
-
-      const outputDir = result.dest;
-      const filesToCopy = ['playgama-bridge.js', 'playgama-bridge-config.json'];
-
-      for (const fileName of filesToCopy) {
-        const srcPath = path.join(__dirname, fileName);
-        const destPath = path.join(outputDir, fileName);
-        if (fs.existsSync(srcPath)) {
-          fs.copyFileSync(srcPath, destPath);
-          console.log(`[${PACKAGE_NAME}] Copied ${fileName} to ${destPath}`);
-        } else {
-          console.warn(`[${PACKAGE_NAME}] File not found: ${srcPath}`);
-        }
-      }
-    } catch (err) {
-      console.error(`[${PACKAGE_NAME}] Error during onAfterBuild:`, err);
-    }
-  },
-
   methods: {
     onInstall() {
       console.log(`[${PACKAGE_NAME}] Installing templates...`);
@@ -89,7 +67,7 @@ module.exports = {
           }
         });
 
-        // ✅ Copy playgama-bridge.js into the copied preview-template
+        // Copy playgama-bridge.js into the copied preview-template
         const bridgeFileSrc = path.join(extDir, 'playgama-bridge.js');
         const previewTemplateDest = path.join(projectRoot, 'preview-template', 'playgama-bridge.js');
 
@@ -97,7 +75,7 @@ module.exports = {
           fs.copyFileSync(bridgeFileSrc, previewTemplateDest);
           console.log(`[${PACKAGE_NAME}] Copied playgama-bridge.js into preview-template`);
         } else {
-          console.warn(`[${PACKAGE_NAME}] playgama-bridge.js not found at root`);
+          console.warn(`[${PACKAGE_NAME}] playgama-bridge.js not found: ${bridgeFileSrc}`);
         }
 
         console.log(`[${PACKAGE_NAME}] Templates installed successfully`);
@@ -139,11 +117,5 @@ module.exports = {
     });
   }
 }
-},
-
-  messages: {
-    'update-bridge-config'() {
-      module.exports.methods.updateBridgeConfig();
-    }
-  }
+}
 };
