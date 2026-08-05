@@ -50,6 +50,7 @@ export enum MODULE_NAME {
     DAILY_REWARDS = 'daily_rewards',
     TASKS = 'tasks',
     CROSS_PROMO = 'cross_promo',
+    NOTIFICATIONS = 'notifications',
 }
 
 export enum EVENT_NAME {
@@ -403,6 +404,26 @@ export interface CrossPromoModule {
     hide(): void;
 }
 
+export interface ScheduledNotification {
+    id: string;
+    title: string;
+    description: string;
+    delaySeconds?: number;
+    image?: string;
+    callToAction?: string;
+    payload?: string;
+}
+
+export interface NotificationsModule {
+    isSupported: boolean;
+
+    // The payload of the notification the game was launched from is delivered
+    // through the regular platform payload — see bridge.platform.payload.
+    schedule(notification: ScheduledNotification): Promise<void>;
+    cancel(id: string): Promise<void>;
+    cancelAll(): Promise<void>;
+}
+
 export interface PlaygamaBridgeInitOptions {
     configFilePath?: string;
     [key: string]: any;
@@ -430,6 +451,7 @@ export interface PlaygamaBridge extends EventEmitter {
     dailyRewards: DailyRewardsModule;
     tasks: TasksModule;
     crossPromo: CrossPromoModule;
+    notifications: NotificationsModule;
 
     readonly PLATFORM_ID: typeof PLATFORM_ID;
     readonly PLATFORM_MESSAGE: typeof PLATFORM_MESSAGE;
