@@ -1,3 +1,6 @@
+// Type declarations for Playgama Bridge (playgama-bridge.js, loaded globally).
+// Mirrors the public API of @playgama/bridge v2.
+
 export enum PLATFORM_ID {
     VK = 'vk',
     OK = 'ok',
@@ -5,6 +8,7 @@ export enum PLATFORM_ID {
     CRAZY_GAMES = 'crazy_games',
     GAME_DISTRIBUTION = 'game_distribution',
     PLAYGAMA = 'playgama',
+    STANDALONE = 'standalone',
     PLAYDECK = 'playdeck',
     TELEGRAM = 'telegram',
     Y8 = 'y8',
@@ -14,7 +18,39 @@ export enum PLATFORM_ID {
     MOCK = 'mock',
     QA_TOOL = 'qa_tool',
     MSN = 'msn',
+    MICROSOFT_STORE = 'microsoft_store',
+    HUAWEI = 'huawei',
+    GAMEPUSH = 'gamepush',
+    DISCORD = 'discord',
+    JIO_GAMES = 'jio_games',
+    YOUTUBE = 'youtube',
+    PORTAL = 'portal',
+    REDDIT = 'reddit',
     XIAOMI = 'xiaomi',
+    TIKTOK = 'tiktok',
+    DLIGHTEK = 'dlightek',
+    GAMESNACKS = 'gamesnacks',
+    SAMSUNG = 'samsung',
+}
+
+export enum MODULE_NAME {
+    CORE = 'core',
+    PLATFORM = 'platform',
+    PLAYER = 'player',
+    STORAGE = 'storage',
+    ADVERTISEMENT = 'advertisement',
+    SOCIAL = 'social',
+    DEVICE = 'device',
+    LEADERBOARDS = 'leaderboards',
+    PAYMENTS = 'payments',
+    REMOTE_CONFIG = 'remote_config',
+    CLIPBOARD = 'clipboard',
+    ACHIEVEMENTS = 'achievements',
+    ANALYTICS = 'analytics',
+    DAILY_REWARDS = 'daily_rewards',
+    TASKS = 'tasks',
+    CROSS_PROMO = 'cross_promo',
+    NOTIFICATIONS = 'notifications',
 }
 
 export enum EVENT_NAME {
@@ -24,6 +60,10 @@ export enum EVENT_NAME {
     ADVANCED_BANNERS_STATE_CHANGED = 'advanced_banners_state_changed',
     AUDIO_STATE_CHANGED = 'audio_state_changed',
     PAUSE_STATE_CHANGED = 'pause_state_changed',
+    ORIENTATION_STATE_CHANGED = 'orientation_state_changed',
+    SCREEN_SIZE_CHANGED = 'screen_size_changed',
+    PLATFORM_MESSAGE_SENT = 'platform_message_sent',
+    PLATFORM_STORAGE_AVAILABILITY_CHANGED = 'platform_storage_availability_changed',
 }
 
 export enum DEVICE_TYPE {
@@ -33,25 +73,39 @@ export enum DEVICE_TYPE {
     TV = 'tv',
 }
 
+export enum DEVICE_OS {
+    WINDOWS = 'windows',
+    MACOS = 'macos',
+    LINUX = 'linux',
+    ANDROID = 'android',
+    IOS = 'ios',
+    OTHER = 'other',
+}
+
+export enum DEVICE_ORIENTATION {
+    PORTRAIT = 'portrait',
+    LANDSCAPE = 'landscape',
+}
+
 export enum PLATFORM_MESSAGE {
     GAME_READY = 'game_ready',
-    IN_GAME_LOADING_STARTED = 'in_game_loading_started',
-    IN_GAME_LOADING_STOPPED = 'in_game_loading_stopped',
-    GAMEPLAY_STARTED = 'gameplay_started',
-    GAMEPLAY_STOPPED = 'gameplay_stopped',
-    PLAYER_GOT_ACHIEVEMENT = 'player_got_achievement',
     LEVEL_STARTED = 'level_started',
     LEVEL_COMPLETED = 'level_completed',
     LEVEL_FAILED = 'level_failed',
     LEVEL_PAUSED = 'level_paused',
     LEVEL_RESUMED = 'level_resumed',
+    IN_GAME_LOADING_STARTED = 'in_game_loading_started',
+    IN_GAME_LOADING_STOPPED = 'in_game_loading_stopped',
+    GAMEPLAY_STARTED = 'gameplay_started',
+    GAMEPLAY_STOPPED = 'gameplay_stopped',
+    PLAYER_GOT_ACHIEVEMENT = 'player_got_achievement',
 }
 
 export enum INTERSTITIAL_STATE {
     LOADING = 'loading',
     OPENED = 'opened',
     CLOSED = 'closed',
-    FAILED = 'failed'
+    FAILED = 'failed',
 }
 
 export enum REWARDED_STATE {
@@ -59,14 +113,19 @@ export enum REWARDED_STATE {
     OPENED = 'opened',
     CLOSED = 'closed',
     FAILED = 'failed',
-    REWARDED = 'rewarded'
+    REWARDED = 'rewarded',
 }
 
 export enum BANNER_STATE {
     LOADING = 'loading',
     SHOWN = 'shown',
     HIDDEN = 'hidden',
-    FAILED = 'failed'
+    FAILED = 'failed',
+}
+
+export enum BANNER_POSITION {
+    TOP = 'top',
+    BOTTOM = 'bottom',
 }
 
 export enum LEADERBOARD_TYPE {
@@ -76,169 +135,57 @@ export enum LEADERBOARD_TYPE {
     NATIVE_POPUP = 'native_popup',
 }
 
-export enum BANNER_POSITION{
-    TOP = 'top',
-    BOTTOM = 'bottom'
+export enum LAUNCH_SOURCE {
+    NOTIFICATION = 'notification',
 }
 
-
-export interface ModuleBase {
-    constructor(platformBridge: any);
-
-    _platformBridge: any;
-
-    initialize(): any;
+export enum TASK_TYPE {
+    DAILY = 'daily',
+    WEEKLY = 'weekly',
+    PERMANENT = 'permanent',
 }
 
-export interface DeviceModule extends ModuleBase {
-    type: DEVICE_TYPE;
+export interface EventEmitter {
+    on(eventName: string, callback: (...args: any[]) => void): void;
+
+    once(eventName: string, callback: (...args: any[]) => void): void;
+
+    off(eventName: string, callback?: (...args: any[]) => void): void;
 }
 
-export interface AdvertisementModule extends ModuleBase {
-    isBannerSupported: boolean;
-    bannerState: BANNER_STATE;
-    isInterstitialSupported: boolean;
-    interstitialState: INTERSTITIAL_STATE;
-    isRewardedSupported: boolean;
-    rewardedState: REWARDED_STATE;
-    isAdvancedBannersSupported: boolean;
-    advancedBannersState: BANNER_STATE;
-    minimumDelayBetweenInterstitial: number;
-
-    setMinimumDelayBetweenInterstitial(delay: number): void;
-
-    showBanner(position?: BANNER_POSITION, placement?: string): void;
-
-    hideBanner(): void;
-
-    showInterstitial(placement?: string): void;
-
-    showRewarded(placement?: string): void;
-
-    showAdvancedBanners(placement?: string): void;
-
-    hideAdvancedBanners(): void;
-
-    checkAdBlock(): Promise<boolean>;
-
-    on(event: string, listener: (...args: any[]) => void): this;
-
-    once(event: string, listener: (...args: any[]) => void): this;
-
-    off(event: string, listener: (...args: any[]) => void): this;
-
-    emit(event: string, ...args: any[]): boolean;
+export interface SafeAreaInsets {
+    top: number;
+    bottom: number;
+    left: number;
+    right: number;
 }
 
-export interface RemoteConfigModule extends ModuleBase {
-   isSupported: boolean;
-   setContext(parameters: Record<string, string | number | boolean>): void;
-   get(): any;
-}
-
-export interface LeaderboardsModule extends ModuleBase {
-    type: LEADERBOARD_TYPE;
-
-    setScore(id: string, score: number): any;
-
-    getEntries(id: string): any;
-
-    showNativePopup(id: string): any;
-}
-
-export interface StorageModule extends ModuleBase {
-    get(key: string|string[], tryParseJson?: boolean): any | Promise<unknown>;
-
-    set(key: string|string[], value: any): any;
-
-    delete(key: string|string[]): any;
-}
-
-export interface SocialModule extends ModuleBase {
-    isInviteFriendsSupported: boolean;
-    isJoinCommunitySupported: boolean;
-    isShareSupported: boolean;
-    isCreatePostSupported: boolean;
-    isAddToHomeScreenSupported: boolean;
-    isAddToFavoritesSupported: boolean;
-    isRateSupported: boolean;
-
-    inviteFriends(options?: any): any | Promise<never>;
-
-    joinCommunity(options: any): any | Promise<never>;
-
-    share(options: any): any | Promise<never>;
-
-    createPost(options: any): any | Promise<never>;
-
-    addToHomeScreen(): any | Promise<never>;
-
-    addToFavorites(): any | Promise<never>;
-
-    rate(): any | Promise<never>;
-}
-
-export interface PlatformModule extends ModuleBase {
+export interface LeaderboardEntry {
     id: string;
-    sdk: unknown;
-    language: string;
-    payload: unknown;
-    tld: string;
-
-    isAudioEnabled: boolean;
-    isExternalCallsSupported: boolean;
-    isExternalLinksAllowed: boolean;
-
-    sendMessage(message: PLATFORM_MESSAGE, options?: any): Promise<any>;
-
-    sendCustomMessage(id: string, options?: any): Promise<any>;
-
-    getServerTime(): Promise<number>;
-
-    on(event: string, listener: (...args: any[]) => void): this;
-
-    once(event: string, listener: (...args: any[]) => void): this;
-
-    off(event: string, listener: (...args: any[]) => void): this;
-
-    emit(event: string, ...args: any[]): boolean;
-}
-
-export interface PlayerModule extends ModuleBase {
-    isAuthorizationSupported: boolean;
-    isAuthorized: boolean;
-    isGuest: boolean;
-    id: number | string;
     name: string;
-    photos: string[];
-    extra: object;
-
-    authorize(options?: any): Promise<any>;
+    score: number;
+    rank: number;
+    photo: string | null;
 }
 
-export interface AchievementsModule extends ModuleBase {
-    unlock(id: string): any | Promise<any>;
-    getAchievements(): any | Promise<any>;
+export interface CatalogProduct {
+    id: string;
+    price?: string | number;
+    priceValue?: number;
+    priceCurrencyCode?: string;
+    [key: string]: any;
 }
 
-export interface ClipboardModule extends ModuleBase {
-    isSupported: boolean;
-
-    read(): Promise<string>;
-
-    write(text: string): Promise<void>;
+export interface Purchase {
+    id: string;
+    [key: string]: any;
 }
 
-export interface PaymentsModule extends ModuleBase {
-    isSupported: boolean;
-
-    purchase(id: string, options?: any): Promise<any>;
-
-    getPurchases(): Promise<any>;
-
-    getCatalog(): Promise<any>;
-
-    consumePurchase(id: string): Promise<any>;
+export interface Achievement {
+    id: string;
+    name?: string;
+    description?: string;
+    unlocked: boolean;
 }
 
 export interface Game {
@@ -248,16 +195,6 @@ export interface Game {
     iconUrl?: string;
     coverUrl?: string;
     payload?: any;
-}
-
-export interface CrossPromoModule extends ModuleBase {
-    isVisible: boolean;
-
-    getGames(): Promise<Game[]>;
-
-    show(): Promise<void>;
-
-    hide(): void;
 }
 
 export interface TaskTarget {
@@ -274,22 +211,172 @@ export interface TaskReward {
 
 export interface Task {
     id: string;
-    type: string;
+    type: TASK_TYPE;
     targets: TaskTarget[];
     rewards: TaskReward[];
     completed: boolean;
     claimed: boolean;
 }
 
-export interface TasksModule extends ModuleBase {
-    getTasks(): Promise<Task[]>;
+export interface PlatformModule extends EventEmitter {
+    id: PLATFORM_ID;
+    sdk: any;
+    language: string;
+    payload: string | null;
+    tld: string | null;
+    launchSource: LAUNCH_SOURCE | null;
 
-    addProgress(metric: string, amount?: number): Promise<void>;
+    isAudioEnabled: boolean;
+    isPaused: boolean;
+    isExternalCallsSupported: boolean;
+    isExternalLinksAllowed: boolean;
 
-    claimReward(taskId: string): Promise<boolean>;
+    sendMessage(message: PLATFORM_MESSAGE | string, options?: any): Promise<any>;
+
+    sendCustomMessage(id: string, options?: any): Promise<any>;
+
+    getServerTime(): Promise<number>;
 }
 
-export interface DailyRewardsModule extends ModuleBase {
+export interface PlayerModule {
+    isAuthorizationSupported: boolean;
+    isAuthorized: boolean;
+    isGuest: boolean;
+    id: string | null;
+    name: string | null;
+    photos: string[];
+    extra: Record<string, any>;
+
+    authorize(options?: any): Promise<any>;
+}
+
+export interface StorageModule {
+    get(key: string | string[], tryParseJson?: boolean): Promise<any>;
+
+    set(key: string | string[], value: any | any[]): Promise<void>;
+
+    delete(key: string | string[]): Promise<void>;
+}
+
+export interface AdvertisementModule extends EventEmitter {
+    isBannerSupported: boolean;
+    bannerState: BANNER_STATE;
+    isInterstitialSupported: boolean;
+    interstitialState: INTERSTITIAL_STATE;
+    isRewardedSupported: boolean;
+    rewardedState: REWARDED_STATE;
+    rewardedPlacement: string | null;
+    isAdvancedBannersSupported: boolean;
+    advancedBannersState: BANNER_STATE;
+    minimumDelayBetweenInterstitial: number;
+
+    setMinimumDelayBetweenInterstitial(delay: number): void;
+
+    showBanner(position?: BANNER_POSITION, placement?: string): void;
+
+    hideBanner(): void;
+
+    preloadInterstitial(placement?: string): void;
+
+    showInterstitial(placement?: string): void;
+
+    preloadRewarded(placement?: string): void;
+
+    showRewarded(placement?: string): void;
+
+    showAdvancedBanners(placement?: string): void;
+
+    hideAdvancedBanners(): void;
+
+    checkAdBlock(): Promise<boolean>;
+}
+
+export interface SocialModule {
+    isInviteFriendsSupported: boolean;
+    isJoinCommunitySupported: boolean;
+    isShareSupported: boolean;
+    isCreatePostSupported: boolean;
+    isAddToHomeScreenSupported: boolean;
+    isAddToHomeScreenRewardSupported: boolean;
+    isAddToFavoritesSupported: boolean;
+    isAddToFavoritesRewardSupported: boolean;
+    isRateSupported: boolean;
+
+    inviteFriends(options?: any): Promise<any>;
+
+    joinCommunity(options?: any): Promise<any>;
+
+    share(options?: any): Promise<any>;
+
+    createPost(options?: any): Promise<any>;
+
+    addToHomeScreen(): Promise<any>;
+
+    getAddToHomeScreenReward(): Promise<any>;
+
+    addToFavorites(): Promise<any>;
+
+    getAddToFavoritesReward(): Promise<any>;
+
+    rate(): Promise<any>;
+}
+
+export interface DeviceModule extends EventEmitter {
+    type: DEVICE_TYPE;
+    os: DEVICE_OS;
+    orientation: DEVICE_ORIENTATION | null;
+    safeArea: SafeAreaInsets;
+}
+
+export interface LeaderboardsModule {
+    type: LEADERBOARD_TYPE;
+
+    setScore(id: string, score: number): Promise<any>;
+
+    getEntries(id: string): Promise<LeaderboardEntry[]>;
+
+    showNativePopup(id: string): Promise<any>;
+}
+
+export interface PaymentsModule {
+    isSupported: boolean;
+
+    purchase(id: string, options?: any): Promise<Purchase>;
+
+    getPurchases(): Promise<Purchase[]>;
+
+    getCatalog(): Promise<CatalogProduct[]>;
+
+    consumePurchase(id: string): Promise<Purchase>;
+}
+
+export interface RemoteConfigModule {
+    isSupported: boolean;
+
+    setContext(parameters: Record<string, string | number | boolean>): void;
+
+    get(): Promise<any>;
+}
+
+export interface ClipboardModule {
+    isSupported: boolean;
+
+    read(): Promise<string>;
+
+    write(text: string): Promise<void>;
+}
+
+export interface AchievementsModule {
+    unlock(id: string): Promise<any>;
+
+    getAchievements(): Promise<Achievement[]>;
+}
+
+export interface AnalyticsModule {
+    send(eventType: string, data?: Record<string, any>): void;
+}
+
+export interface DailyRewardsModule {
     getRewards(): Promise<string[]>;
 
     getCurrentDay(): Promise<number>;
@@ -299,27 +386,89 @@ export interface DailyRewardsModule extends ModuleBase {
     claimCurrentReward(): Promise<boolean>;
 }
 
-export interface PlaygamaBridge {
+export interface TasksModule {
+    getTasks(): Promise<Task[]>;
+
+    addProgress(metric: string, amount?: number): Promise<void>;
+
+    claimReward(taskId: string): Promise<boolean>;
+}
+
+export interface CrossPromoModule {
+    isVisible: boolean;
+
+    getGames(): Promise<Game[]>;
+
+    show(): Promise<void>;
+
+    hide(): void;
+}
+
+export interface ScheduledNotification {
+    id: string;
+    title: string;
+    description: string;
+    delaySeconds?: number;
+    image?: string;
+    callToAction?: string;
+    payload?: string;
+}
+
+export interface NotificationsModule {
+    isSupported: boolean;
+
+    // The payload of the notification the game was launched from is delivered
+    // through the regular platform payload — see bridge.platform.payload.
+    schedule(notification: ScheduledNotification): Promise<void>;
+    cancel(id: string): Promise<void>;
+    cancelAll(): Promise<void>;
+}
+
+export interface PlaygamaBridgeInitOptions {
+    configFilePath?: string;
+    [key: string]: any;
+}
+
+export interface PlaygamaBridge extends EventEmitter {
     version: string;
     isInitialized: boolean;
+    options: any;
+    engine: string;
+    gameVersion: string | null;
+
     platform: PlatformModule;
     player: PlayerModule;
     storage: StorageModule;
     advertisement: AdvertisementModule;
-    achievements: AchievementsModule;
     social: SocialModule;
     device: DeviceModule;
     leaderboards: LeaderboardsModule;
+    payments: PaymentsModule;
     remoteConfig: RemoteConfigModule;
     clipboard: ClipboardModule;
-    payments: PaymentsModule;
-    crossPromo: CrossPromoModule;
-    tasks: TasksModule;
+    achievements: AchievementsModule;
+    analytics: AnalyticsModule;
     dailyRewards: DailyRewardsModule;
-    initialize(): any | Promise<void>;
+    tasks: TasksModule;
+    crossPromo: CrossPromoModule;
+    notifications: NotificationsModule;
+
+    readonly PLATFORM_ID: typeof PLATFORM_ID;
+    readonly PLATFORM_MESSAGE: typeof PLATFORM_MESSAGE;
+    readonly MODULE_NAME: typeof MODULE_NAME;
+    readonly EVENT_NAME: typeof EVENT_NAME;
+    readonly INTERSTITIAL_STATE: typeof INTERSTITIAL_STATE;
+    readonly REWARDED_STATE: typeof REWARDED_STATE;
+    readonly BANNER_STATE: typeof BANNER_STATE;
+    readonly DEVICE_TYPE: typeof DEVICE_TYPE;
+    readonly DEVICE_ORIENTATION: typeof DEVICE_ORIENTATION;
+    readonly LAUNCH_SOURCE: typeof LAUNCH_SOURCE;
+
+    initialize(options?: PlaygamaBridgeInitOptions): Promise<void>;
+
+    setGameLoadingProgress(percent: number): void;
 }
 
 declare global {
     var bridge: PlaygamaBridge;
-    var platformMessage: PLATFORM_MESSAGE;
 }

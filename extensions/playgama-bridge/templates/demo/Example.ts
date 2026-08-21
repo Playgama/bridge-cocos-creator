@@ -116,6 +116,9 @@ export class Example extends Component {
     @property(RichText)
     dailyRewardsResultText: RichText;
 
+    @property(RichText)
+    notificationsResultText: RichText;
+
 
 
 
@@ -855,6 +858,70 @@ export class Example extends Component {
                 console.error("OnClaimCurrentRewardCompleted, success: false", error);
                 if (this.dailyRewardsResultText) {
                     this.dailyRewardsResultText.string = "claimCurrentReward error: " + error;
+                }
+            });
+    }
+
+    onNotificationsScheduleButtonClicked() {
+
+        if (!bridge.notifications.isSupported) {
+            if (this.notificationsResultText) {
+                this.notificationsResultText.string = "notifications are not supported";
+            }
+            return;
+        }
+
+        bridge.notifications.schedule({
+            id: "come_back",
+            title: "Ready for another round?",
+            description: "Jump back in right where you left off.",
+            delaySeconds: 86400,
+            payload: "come_back",
+        })
+            .then(() => {
+                console.log("OnNotificationsScheduleCompleted, success: true");
+                if (this.notificationsResultText) {
+                    this.notificationsResultText.string = "notification scheduled";
+                }
+            })
+            .catch(error => {
+                console.error("OnNotificationsScheduleCompleted, success: false", error);
+                if (this.notificationsResultText) {
+                    this.notificationsResultText.string = "schedule error: " + error;
+                }
+            });
+    }
+
+    onNotificationsCancelButtonClicked() {
+
+        bridge.notifications.cancel("come_back")
+            .then(() => {
+                console.log("OnNotificationsCancelCompleted, success: true");
+                if (this.notificationsResultText) {
+                    this.notificationsResultText.string = "notification canceled";
+                }
+            })
+            .catch(error => {
+                console.error("OnNotificationsCancelCompleted, success: false", error);
+                if (this.notificationsResultText) {
+                    this.notificationsResultText.string = "cancel error: " + error;
+                }
+            });
+    }
+
+    onNotificationsCancelAllButtonClicked() {
+
+        bridge.notifications.cancelAll()
+            .then(() => {
+                console.log("OnNotificationsCancelAllCompleted, success: true");
+                if (this.notificationsResultText) {
+                    this.notificationsResultText.string = "all notifications canceled";
+                }
+            })
+            .catch(error => {
+                console.error("OnNotificationsCancelAllCompleted, success: false", error);
+                if (this.notificationsResultText) {
+                    this.notificationsResultText.string = "cancel all error: " + error;
                 }
             });
     }
