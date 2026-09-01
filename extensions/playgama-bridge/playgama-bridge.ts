@@ -9,7 +9,6 @@ export enum PLATFORM_ID {
     GAME_DISTRIBUTION = 'game_distribution',
     PLAYGAMA = 'playgama',
     STANDALONE = 'standalone',
-    PLAYDECK = 'playdeck',
     TELEGRAM = 'telegram',
     Y8 = 'y8',
     LAGGED = 'lagged',
