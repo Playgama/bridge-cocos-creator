@@ -136,6 +136,12 @@ export enum LEADERBOARD_TYPE {
 
 export enum LAUNCH_SOURCE {
     NOTIFICATION = 'notification',
+    POST = 'post',
+}
+
+export enum POST_REWARD_TYPE {
+    VISIT = 'visit',
+    AUTHOR = 'author',
 }
 
 export enum TASK_TYPE {
@@ -217,6 +223,14 @@ export interface Task {
     claimed: boolean;
 }
 
+// A reward declared in the config entry of a post, verified by the platform backend.
+// For the author the amount is already multiplied by the players counted.
+export interface PostReward {
+    id: string;
+    amount: number;
+    type: POST_REWARD_TYPE;
+}
+
 export interface PlatformModule extends EventEmitter {
     id: PLATFORM_ID;
     sdk: any;
@@ -224,6 +238,10 @@ export interface PlatformModule extends EventEmitter {
     payload: string | null;
     tld: string | null;
     launchSource: LAUNCH_SOURCE | null;
+    // Everything the launch carries: the parameters the platform passed to the game
+    // and, when it was opened from one of the game's own posts, `postId` — the id of
+    // that post's config entry.
+    data: Record<string, any>;
 
     isAudioEnabled: boolean;
     isPaused: boolean;
@@ -300,14 +318,19 @@ export interface SocialModule {
     isAddToFavoritesSupported: boolean;
     isAddToFavoritesRewardSupported: boolean;
     isRateSupported: boolean;
+    isPostRewardSupported: boolean;
 
-    inviteFriends(options?: any): Promise<any>;
+    // inviteFriends, share and createPost take either the id of an entry declared in
+    // playgama-bridge-config.json (social.invites, social.shares, social.posts) or the content.
+    inviteFriends(options?: string | Record<string, any>): Promise<any>;
 
     joinCommunity(options?: any): Promise<any>;
 
-    share(options?: any): Promise<any>;
+    share(options?: string | Record<string, any>): Promise<any>;
 
-    createPost(options?: any): Promise<any>;
+    // `payload` is the game's own string for this one post, handed back as
+    // bridge.platform.payload when someone opens it.
+    createPost(options?: string | Record<string, any>, payload?: string): Promise<any>;
 
     addToHomeScreen(): Promise<any>;
 
@@ -318,6 +341,11 @@ export interface SocialModule {
     getAddToFavoritesReward(): Promise<any>;
 
     rate(): Promise<any>;
+
+    // Everything the player has coming from posts right now: the reward for the post
+    // the game was launched from and what the author earned from the players who came
+    // through their posts. Resolves with an empty array when there is nothing.
+    getPostReward(): Promise<PostReward[]>;
 }
 
 export interface DeviceModule extends EventEmitter {
