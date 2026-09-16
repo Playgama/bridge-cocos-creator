@@ -301,13 +301,17 @@ export interface SocialModule {
     isAddToFavoritesRewardSupported: boolean;
     isRateSupported: boolean;
 
-    inviteFriends(options?: any): Promise<any>;
+    // inviteFriends, share and createPost take either the id of an entry declared in
+    // playgama-bridge-config.json (social.invites, social.shares, social.posts) or the content.
+    inviteFriends(options?: string | Record<string, any>): Promise<any>;
 
     joinCommunity(options?: any): Promise<any>;
 
-    share(options?: any): Promise<any>;
+    share(options?: string | Record<string, any>): Promise<any>;
 
-    createPost(options?: any): Promise<any>;
+    // `payload` is the game's own string for this one post, handed back as
+    // bridge.platform.payload when someone opens it.
+    createPost(options?: string | Record<string, any>, payload?: string): Promise<any>;
 
     addToHomeScreen(): Promise<any>;
 
