@@ -151,6 +151,22 @@ export class Example extends Component {
         this.isRateSupported.string = 'Is rate supported: ' + bridge.social.isRateSupported;
         this.isExternalLinksAllowed.string = 'Is external links allowed: ' + bridge.platform.isExternalLinksAllowed;
 
+        console.log('Launch source:', bridge.platform.launchSource, 'data:', bridge.platform.data);
+
+        // Grant whatever the posts brought: the reward of the post the game was opened
+        // from and what the player's own posts earned since the previous check.
+        if (bridge.social.isPostRewardSupported) {
+            bridge.social.getPostReward()
+                .then(rewards => {
+                    for (const reward of rewards) {
+                        console.log('Post reward:', reward.type, reward.id, reward.amount);
+                    }
+                })
+                .catch(error => {
+                    console.error('Get post reward failed:', error);
+                });
+        }
+
         this.leaderboardsType.string = 'Leaderboards Type: ' + bridge.leaderboards.type;
 
         this.isPaymentsSupported.string = 'Is payments supported: ' + bridge.payments.isSupported;
@@ -529,7 +545,9 @@ export class Example extends Component {
         // Canonical "text"/"url"; the bridge assembles the platform-native post (e.g.
         // OK builds its media attachment). "status" (publish to profile) can be set
         // per-platform in playgama-bridge-config.json under "social". With an entry
-        // declared in "social.posts", pass its id instead: bridge.social.createPost("gift")
+        // declared in "social.posts", pass its id instead: bridge.social.createPost("gift").
+        // A second string travels with the post and comes back as bridge.platform.payload
+        // when someone opens it: bridge.social.createPost("level", JSON.stringify(level))
         const options: Record<string, any> = {
             text: "I'm playing this game!",
             url: "YOUR_GAME_URL",
