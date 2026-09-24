@@ -400,7 +400,9 @@ export interface AchievementsModule {
 }
 
 export interface AnalyticsModule {
-    send(eventType: string, data?: Record<string, any>): void;
+    // Sends a game event. The name and the payload are entirely up to the game —
+    // they are never matched against the SDK's own event names.
+    send(eventName: string, data?: Record<string, any>): void;
 }
 
 export interface DailyRewardsModule {
