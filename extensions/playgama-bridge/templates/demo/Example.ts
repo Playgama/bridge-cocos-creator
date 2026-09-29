@@ -458,17 +458,8 @@ export class Example extends Component {
     }
 
     onShareButtonClicked() {
-        // Pass canonical content fields ("text", "image", "url"); the bridge maps them
-        // to each platform (e.g. VK uses "url" as the share link). Platform-specific
-        // defaults can also be set in playgama-bridge-config.json under "social".
-        // With an entry declared in "social.shares" of playgama-bridge-config.json,
-        // pass its id instead: bridge.social.share("score")
-        const options: Record<string, any> = {
-            text: "Check out this game!",
-            url: "YOUR_GAME_URL",
-        };
-
-        bridge.social.share(options)
+        // "score" is the id of an entry declared in "social.shares" of playgama-bridge-config.json
+        bridge.social.share("score")
             .then(() => {
                 // Optionally handle success
                 console.log("Share successful");
@@ -481,15 +472,9 @@ export class Example extends Component {
 
     async onInviteFriendsButtonClicked() {
 
-        // With an entry declared in "social.invites" of playgama-bridge-config.json,
-        // pass its id instead: bridge.social.inviteFriends("friends")
-        const options: Record<string, any> = {};
-        if (bridge.platform.id === "ok") {
-            options.text = "Hello World!";
-        }
-
+        // "friends" is the id of an entry declared in "social.invites" of playgama-bridge-config.json
         try {
-            await bridge.social.inviteFriends(options);
+            await bridge.social.inviteFriends("friends");
         } catch (error) {
             console.error("Invite friends failed:", error);
         }
@@ -500,15 +485,10 @@ export class Example extends Component {
     async onJoinCommunityButtonClicked() {
 
 
-        const options: Record<string, any> = {};
-        if (bridge.platform.id === "vk") {
-            options.groupId = 199747461;
-        } else if (bridge.platform.id === "ok") {
-            options.groupId = 62984239710374;
-        }
-
+        // The community ("groupId" and so on) is declared in "social.joinCommunity"
+        // of playgama-bridge-config.json
         try {
-            await bridge.social.joinCommunity(options);
+            await bridge.social.joinCommunity();
         } catch (error) {
             console.error("Join community failed:", error);
         }
@@ -542,19 +522,11 @@ export class Example extends Component {
 
     async onCreatePostButtonClicked() {
 
-        // Canonical "text"/"url"; the bridge assembles the platform-native post (e.g.
-        // OK builds its media attachment). "status" (publish to profile) can be set
-        // per-platform in playgama-bridge-config.json under "social". With an entry
-        // declared in "social.posts", pass its id instead: bridge.social.createPost("gift").
+        // "gift" is the id of an entry declared in "social.posts" of playgama-bridge-config.json.
         // A second string travels with the post and comes back as bridge.platform.payload
         // when someone opens it: bridge.social.createPost("level", JSON.stringify(level))
-        const options: Record<string, any> = {
-            text: "I'm playing this game!",
-            url: "YOUR_GAME_URL",
-        };
-
         try {
-            await bridge.social.createPost(options);
+            await bridge.social.createPost("gift");
         } catch (error) {
             console.error("Create post failed:", error);
         }

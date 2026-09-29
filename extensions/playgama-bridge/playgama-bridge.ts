@@ -320,17 +320,18 @@ export interface SocialModule {
     isRateSupported: boolean;
     isPostRewardSupported: boolean;
 
-    // inviteFriends, share and createPost take either the id of an entry declared in
-    // playgama-bridge-config.json (social.invites, social.shares, social.posts) or the content.
-    inviteFriends(options?: string | Record<string, any>): Promise<any>;
+    // inviteFriends, share and createPost take the id of an entry declared in
+    // playgama-bridge-config.json (social.invites, social.shares, social.posts).
+    // joinCommunity reads its data from social.joinCommunity of the config.
+    inviteFriends(id?: string): Promise<any>;
 
-    joinCommunity(options?: any): Promise<any>;
+    joinCommunity(): Promise<any>;
 
-    share(options?: string | Record<string, any>): Promise<any>;
+    share(id?: string): Promise<any>;
 
     // `payload` is the game's own string for this one post, handed back as
     // bridge.platform.payload when someone opens it.
-    createPost(options?: string | Record<string, any>, payload?: string): Promise<any>;
+    createPost(id?: string, payload?: string): Promise<any>;
 
     addToHomeScreen(): Promise<any>;
 
