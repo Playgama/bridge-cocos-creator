@@ -8,6 +8,7 @@ export enum PLATFORM_ID {
     CRAZY_GAMES = 'crazy_games',
     GAME_DISTRIBUTION = 'game_distribution',
     PLAYGAMA = 'playgama',
+    PLAYGAMA_SANDBOX = 'playgama_sandbox',
     STANDALONE = 'standalone',
     TELEGRAM = 'telegram',
     Y8 = 'y8',
@@ -63,6 +64,13 @@ export enum EVENT_NAME {
     SCREEN_SIZE_CHANGED = 'screen_size_changed',
     PLATFORM_MESSAGE_SENT = 'platform_message_sent',
     PLATFORM_STORAGE_AVAILABILITY_CHANGED = 'platform_storage_availability_changed',
+    VISIBILITY_STATE_CHANGED = 'visibility_state_changed',
+    STORAGE_SET = 'storage_set',
+    CROSS_PROMO_SHOWN = 'cross_promo_shown',
+    DAILY_REWARDS_CLAIMED = 'daily_rewards_claimed',
+    DAILY_REWARDS_STREAK_RESET = 'daily_rewards_streak_reset',
+    TASKS_REWARD_CLAIMED = 'tasks_reward_claimed',
+    TASKS_PERIOD_ROLLED_OVER = 'tasks_period_rolled_over',
 }
 
 export enum DEVICE_TYPE {
@@ -464,7 +472,7 @@ export interface PlaygamaBridge extends EventEmitter {
     isInitialized: boolean;
     options: any;
     engine: string;
-    gameVersion: string | null;
+    set gameVersion(value: string | null);
 
     platform: PlatformModule;
     player: PlayerModule;
