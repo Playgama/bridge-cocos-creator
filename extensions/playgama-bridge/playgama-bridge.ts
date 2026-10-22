@@ -51,6 +51,7 @@ export enum MODULE_NAME {
     TASKS = 'tasks',
     CROSS_PROMO = 'cross_promo',
     NOTIFICATIONS = 'notifications',
+    MULTIPLAYER = 'multiplayer',
 }
 
 export enum EVENT_NAME {
@@ -71,6 +72,14 @@ export enum EVENT_NAME {
     DAILY_REWARDS_STREAK_RESET = 'daily_rewards_streak_reset',
     TASKS_REWARD_CLAIMED = 'tasks_reward_claimed',
     TASKS_PERIOD_ROLLED_OVER = 'tasks_period_rolled_over',
+    MULTIPLAYER_STATE_CHANGED = 'multiplayer_state_changed',
+    MULTIPLAYER_ROOM_LEFT = 'multiplayer_room_left',
+    MULTIPLAYER_ROOM_UPDATED = 'multiplayer_room_updated',
+    MULTIPLAYER_PLAYER_JOINED = 'multiplayer_player_joined',
+    MULTIPLAYER_PLAYER_LEFT = 'multiplayer_player_left',
+    MULTIPLAYER_PLAYER_UPDATED = 'multiplayer_player_updated',
+    MULTIPLAYER_HOST_CHANGED = 'multiplayer_host_changed',
+    MULTIPLAYER_MESSAGE_RECEIVED = 'multiplayer_message_received',
 }
 
 export enum DEVICE_TYPE {
@@ -156,6 +165,35 @@ export enum TASK_TYPE {
     DAILY = 'daily',
     WEEKLY = 'weekly',
     PERMANENT = 'permanent',
+}
+
+export enum MULTIPLAYER_STATE {
+    DISCONNECTED = 'disconnected',
+    CONNECTING = 'connecting',
+    CONNECTED = 'connected',
+    // The connection dropped, the player keeps the seat while the SDK reconnects.
+    RECONNECTING = 'reconnecting',
+}
+
+// Message addressing for multiplayer.send(): besides these, a player id or a list of ids.
+export enum MULTIPLAYER_TARGET {
+    ALL = 'all',
+    OTHERS = 'others',
+    HOST = 'host',
+}
+
+// RELAY: the host player runs the game, the server relays messages.
+export enum MULTIPLAYER_TYPE {
+    RELAY = 'relay',
+}
+
+export enum ROOM_LEAVE_REASON {
+    // leaveRoom() was called.
+    LEFT = 'left',
+    // Reconnection failed.
+    CONNECTION_LOST = 'connection_lost',
+    // The server closed the room.
+    ROOM_CLOSED = 'room_closed',
 }
 
 export interface EventEmitter {
@@ -462,6 +500,132 @@ export interface NotificationsModule {
     cancelAll(): Promise<void>;
 }
 
+// JSON-serializable custom data. On update keys are merged, a null value removes the key.
+export type MultiplayerProperties = Record<string, any>;
+
+export interface MultiplayerPlayer {
+    id: string;
+    name: string;
+    isHost: boolean;
+    // False while the player is reconnecting: the seat is kept, messages are not delivered.
+    isConnected: boolean;
+    properties: MultiplayerProperties;
+}
+
+export interface MultiplayerRoom {
+    // Room code players type to join.
+    id: string;
+    type: MULTIPLAYER_TYPE;
+    maxPlayers: number;
+    isOpen: boolean;
+    // Listed by getRooms() and matched by joinOrCreateRoom().
+    isVisible: boolean;
+    hostId: string;
+    properties: MultiplayerProperties;
+}
+
+export interface MultiplayerRoomInfo {
+    id: string;
+    type: MULTIPLAYER_TYPE;
+    maxPlayers: number;
+    playerCount: number;
+    properties: MultiplayerProperties;
+}
+
+export interface MultiplayerMessage {
+    type: string;
+    data: any;
+    from: string;
+}
+
+export interface MultiplayerSendOptions {
+    // Player id, list of player ids or MULTIPLAYER_TARGET (OTHERS by default).
+    to?: MULTIPLAYER_TARGET | string | string[];
+}
+
+export interface MultiplayerPlayerOptions {
+    playerName?: string;
+    playerProperties?: MultiplayerProperties;
+    // MULTIPLAYER_TYPE.RELAY by default.
+    type?: MULTIPLAYER_TYPE;
+}
+
+export interface MultiplayerCreateRoomOptions extends MultiplayerPlayerOptions {
+    maxPlayers?: number;
+    // False by default: the room is joined by code only.
+    isVisible?: boolean;
+    isOpen?: boolean;
+    properties?: MultiplayerProperties;
+}
+
+export interface MultiplayerJoinRoomOptions extends MultiplayerPlayerOptions {}
+
+export interface MultiplayerJoinOrCreateRoomOptions extends MultiplayerPlayerOptions {
+    // Players are matched only into rooms of the same size.
+    maxPlayers?: number;
+    // Room properties the room must have (equal values); a created room gets them too.
+    filter?: MultiplayerProperties;
+    // Extra properties of a created room.
+    properties?: MultiplayerProperties;
+}
+
+export interface MultiplayerGetRoomsOptions {
+    filter?: MultiplayerProperties;
+    maxPlayers?: number;
+    limit?: number;
+    type?: MULTIPLAYER_TYPE;
+}
+
+// Content the game adds to a room invite; any other key is passed to the platform as is.
+export interface MultiplayerInviteOptions {
+    text?: string;
+    image?: string;
+    [key: string]: any;
+}
+
+export interface MultiplayerModule extends EventEmitter {
+    isSupported: boolean;
+    state: MULTIPLAYER_STATE;
+    isInRoom: boolean;
+    isHost: boolean;
+    playerId: string | null;
+    hostId: string | null;
+    roomId: string | null;
+    room: MultiplayerRoom | null;
+    players: MultiplayerPlayer[];
+    isInviteSupported: boolean;
+    // Room code from the invite link the game was opened with.
+    launchRoomId: string | null;
+
+    // Promises reject with an error whose `code` is one of MULTIPLAYER_NOT_SUPPORTED,
+    // MULTIPLAYER_ALREADY_IN_ROOM, MULTIPLAYER_NOT_IN_ROOM, MULTIPLAYER_ROOM_NOT_FOUND,
+    // MULTIPLAYER_ROOM_FULL, MULTIPLAYER_ROOM_CLOSED, MULTIPLAYER_CONNECTION_FAILED.
+    createRoom(options?: MultiplayerCreateRoomOptions): Promise<string>;
+
+    joinRoom(roomId: string, options?: MultiplayerJoinRoomOptions): Promise<void>;
+
+    joinOrCreateRoom(options?: MultiplayerJoinOrCreateRoomOptions): Promise<string>;
+
+    getRooms(options?: MultiplayerGetRoomsOptions): Promise<MultiplayerRoomInfo[]>;
+
+    inviteToRoom(options?: MultiplayerInviteOptions): Promise<any>;
+
+    leaveRoom(): void;
+
+    // Host only.
+    setRoomOpen(isOpen: boolean): void;
+
+    // Host only.
+    setRoomVisible(isVisible: boolean): void;
+
+    // Host only.
+    setRoomProperties(properties: MultiplayerProperties): void;
+
+    setPlayerProperties(properties: MultiplayerProperties): void;
+
+    send(type: string, data?: any, options?: MultiplayerSendOptions): void;
+}
+
 export interface PlaygamaBridgeInitOptions {
     configFilePath?: string;
     [key: string]: any;
@@ -490,6 +654,7 @@ export interface PlaygamaBridge extends EventEmitter {
     tasks: TasksModule;
     crossPromo: CrossPromoModule;
     notifications: NotificationsModule;
+    multiplayer: MultiplayerModule;
 
     readonly PLATFORM_ID: typeof PLATFORM_ID;
     readonly PLATFORM_MESSAGE: typeof PLATFORM_MESSAGE;
