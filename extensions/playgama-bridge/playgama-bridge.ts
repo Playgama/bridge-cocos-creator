@@ -503,6 +503,10 @@ export interface NotificationsModule {
 // JSON-serializable custom data. On update keys are merged, a null value removes the key.
 export type MultiplayerProperties = Record<string, any>;
 
+// Matchmaking key of a room, set once on creation. Quick match and the room list compare the whole
+// object exactly, types included (2 and '2' differ). A created room also gets these values in its properties.
+export type MultiplayerFilter = Record<string, string | number | boolean>;
+
 export interface MultiplayerPlayer {
     id: string;
     name: string;
@@ -529,6 +533,7 @@ export interface MultiplayerRoomInfo {
     type: MULTIPLAYER_TYPE;
     maxPlayers: number;
     playerCount: number;
+    filter: MultiplayerFilter;
     properties: MultiplayerProperties;
 }
 
@@ -555,6 +560,8 @@ export interface MultiplayerCreateRoomOptions extends MultiplayerPlayerOptions {
     // False by default: the room is joined by code only.
     isVisible?: boolean;
     isOpen?: boolean;
+    // Lets quick match and filtered room lists find a visible room.
+    filter?: MultiplayerFilter;
     properties?: MultiplayerProperties;
 }
 
@@ -563,14 +570,15 @@ export interface MultiplayerJoinRoomOptions extends MultiplayerPlayerOptions {}
 export interface MultiplayerJoinOrCreateRoomOptions extends MultiplayerPlayerOptions {
     // Players are matched only into rooms of the same size.
     maxPlayers?: number;
-    // Room properties the room must have (equal values); a created room gets them too.
-    filter?: MultiplayerProperties;
+    // Players are matched only into rooms with the same filter, e.g. { mode: 'duel' }.
+    filter?: MultiplayerFilter;
     // Extra properties of a created room.
     properties?: MultiplayerProperties;
 }
 
 export interface MultiplayerGetRoomsOptions {
-    filter?: MultiplayerProperties;
+    // Only rooms created with exactly this filter; all rooms when omitted.
+    filter?: MultiplayerFilter;
     maxPlayers?: number;
     limit?: number;
     type?: MULTIPLAYER_TYPE;
