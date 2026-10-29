@@ -80,6 +80,7 @@ export enum EVENT_NAME {
     MULTIPLAYER_PLAYER_UPDATED = 'multiplayer_player_updated',
     MULTIPLAYER_HOST_CHANGED = 'multiplayer_host_changed',
     MULTIPLAYER_MESSAGE_RECEIVED = 'multiplayer_message_received',
+    MULTIPLAYER_SYNC_STATE_RECEIVED = 'multiplayer_sync_state_received',
 }
 
 export enum DEVICE_TYPE {
@@ -548,6 +549,14 @@ export interface MultiplayerSendOptions {
     to?: MULTIPLAYER_TARGET | string | string[];
 }
 
+// Game world the host sends to the other players. True or { updatesPerSecond } (1-10, 10 by default):
+// the world set with setSyncState(), received ones come with MULTIPLAYER_SYNC_STATE_RECEIVED.
+// Or callbacks: getState() returns the world, applyState() takes a received one; both synchronous.
+export type MultiplayerSyncState =
+    | boolean
+    | { updatesPerSecond?: number }
+    | { getState: () => object; applyState: (state: any) => void; updatesPerSecond?: number };
+
 export interface MultiplayerPlayerOptions {
     playerName?: string;
     playerProperties?: MultiplayerProperties;
@@ -556,6 +565,7 @@ export interface MultiplayerPlayerOptions {
 }
 
 export interface MultiplayerCreateRoomOptions extends MultiplayerPlayerOptions {
+    syncState?: MultiplayerSyncState;
     maxPlayers?: number;
     // False by default: the room is joined by code only.
     isVisible?: boolean;
@@ -565,9 +575,12 @@ export interface MultiplayerCreateRoomOptions extends MultiplayerPlayerOptions {
     properties?: MultiplayerProperties;
 }
 
-export interface MultiplayerJoinRoomOptions extends MultiplayerPlayerOptions {}
+export interface MultiplayerJoinRoomOptions extends MultiplayerPlayerOptions {
+    syncState?: MultiplayerSyncState;
+}
 
 export interface MultiplayerJoinOrCreateRoomOptions extends MultiplayerPlayerOptions {
+    syncState?: MultiplayerSyncState;
     // Players are matched only into rooms of the same size.
     maxPlayers?: number;
     // Players are matched only into rooms with the same filter, e.g. { mode: 'duel' }.
@@ -604,6 +617,8 @@ export interface MultiplayerModule extends EventEmitter {
     isInviteSupported: boolean;
     // Room code from the invite link the game was opened with.
     launchRoomId: string | null;
+    // World of syncState without callbacks: the last one set or received.
+    syncState: MultiplayerProperties;
 
     // Promises reject with an error whose `code` is one of MULTIPLAYER_NOT_SUPPORTED,
     // MULTIPLAYER_ALREADY_IN_ROOM, MULTIPLAYER_NOT_IN_ROOM, MULTIPLAYER_ROOM_NOT_FOUND,
@@ -632,6 +647,9 @@ export interface MultiplayerModule extends EventEmitter {
     setPlayerProperties(properties: MultiplayerProperties): void;
 
     send(type: string, data?: any, options?: MultiplayerSendOptions): void;
+
+    // World for syncState without callbacks: the host sends the latest one. Works outside a room too.
+    setSyncState(state: MultiplayerProperties): void;
 }
 
 export interface PlaygamaBridgeInitOptions {
