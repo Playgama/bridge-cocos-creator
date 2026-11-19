@@ -612,6 +612,9 @@ export interface MultiplayerModule extends EventEmitter {
     playerId: string | null;
     hostId: string | null;
     roomId: string | null;
+    // Region of the next created or matched room and of getRooms(), e.g. 'eu'.
+    // Null until setRegion(), getRegions() or the first room call.
+    region: string | null;
     room: MultiplayerRoom | null;
     players: MultiplayerPlayer[];
     isInviteSupported: boolean;
@@ -630,6 +633,13 @@ export interface MultiplayerModule extends EventEmitter {
     joinOrCreateRoom(options?: MultiplayerJoinOrCreateRoomOptions): Promise<string>;
 
     getRooms(options?: MultiplayerGetRoomsOptions): Promise<MultiplayerRoomInfo[]>;
+
+    // Region ids for a region picker, e.g. ['eu', 'us', 'ap']; sets region to the default one if it is still null.
+    getRegions(): Promise<string[]>;
+
+    // Region of the next created or matched room and of getRooms(). The current room stays where it is;
+    // joinRoom() by code always enters the region of the code.
+    setRegion(region: string): void;
 
     inviteToRoom(options?: MultiplayerInviteOptions): Promise<any>;
 
