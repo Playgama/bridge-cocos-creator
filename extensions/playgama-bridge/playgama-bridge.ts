@@ -152,6 +152,15 @@ export enum LEADERBOARD_TYPE {
     NATIVE_POPUP = 'native_popup',
 }
 
+// Reset period of a leaderboard. Daily, weekly and monthly exist only for Playgama leaderboards
+// and reset at 00:00 UTC (weekly on Monday, monthly on the 1st); native platform leaderboards are permanent.
+export enum LEADERBOARD_PERIOD {
+    PERMANENT = 'permanent',
+    DAILY = 'daily',
+    WEEKLY = 'weekly',
+    MONTHLY = 'monthly',
+}
+
 export enum LAUNCH_SOURCE {
     NOTIFICATION = 'notification',
     POST = 'post',
@@ -218,6 +227,13 @@ export interface LeaderboardEntry {
     score: number;
     rank: number;
     photo: string | null;
+}
+
+export interface LeaderboardInfo {
+    id: string;
+    period: LEADERBOARD_PERIOD;
+    // Whole seconds until the current period resets, null for permanent leaderboards.
+    timeLeft: number | null;
 }
 
 export interface CatalogProduct {
@@ -409,6 +425,9 @@ export interface LeaderboardsModule {
     setScore(id: string, score: number): Promise<any>;
 
     getEntries(id: string): Promise<LeaderboardEntry[]>;
+
+    // Period and time left until the reset; rejects when leaderboards are not available.
+    getInfo(id: string): Promise<LeaderboardInfo>;
 
     showNativePopup(id: string): Promise<any>;
 }
