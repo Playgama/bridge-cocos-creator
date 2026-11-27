@@ -152,6 +152,16 @@ export enum LEADERBOARD_TYPE {
     NATIVE_POPUP = 'native_popup',
 }
 
+// Standings getEntries() reads. Every Playgama leaderboard keeps all of them from the same scores;
+// daily, weekly and monthly reset at 00:00 UTC (weekly on Monday, monthly on the 1st).
+// Native platform leaderboards only have permanent.
+export enum LEADERBOARD_PERIOD {
+    PERMANENT = 'permanent',
+    DAILY = 'daily',
+    WEEKLY = 'weekly',
+    MONTHLY = 'monthly',
+}
+
 export enum LAUNCH_SOURCE {
     NOTIFICATION = 'notification',
     POST = 'post',
@@ -218,6 +228,11 @@ export interface LeaderboardEntry {
     score: number;
     rank: number;
     photo: string | null;
+}
+
+export interface LeaderboardEntriesOptions {
+    // Defaults to LEADERBOARD_PERIOD.PERMANENT.
+    period?: LEADERBOARD_PERIOD;
 }
 
 export interface CatalogProduct {
@@ -406,9 +421,12 @@ export interface DeviceModule extends EventEmitter {
 export interface LeaderboardsModule {
     type: LEADERBOARD_TYPE;
 
+    // On a leaderboard set to "sum" in the developer console the score is added to the player's total,
+    // so send what was earned.
     setScore(id: string, score: number): Promise<any>;
 
-    getEntries(id: string): Promise<LeaderboardEntry[]>;
+    // Rejects for a period the leaderboard does not have.
+    getEntries(id: string, options?: LeaderboardEntriesOptions): Promise<LeaderboardEntry[]>;
 
     showNativePopup(id: string): Promise<any>;
 }
