@@ -152,7 +152,7 @@ export enum LEADERBOARD_TYPE {
     NATIVE_POPUP = 'native_popup',
 }
 
-// Standings a leaderboard read returns. Every Playgama leaderboard keeps all of them from the same scores;
+// Standings getEntries() reads. Every Playgama leaderboard keeps all of them from the same scores;
 // daily, weekly and monthly reset at 00:00 UTC (weekly on Monday, monthly on the 1st).
 // Native platform leaderboards only have permanent.
 export enum LEADERBOARD_PERIOD {
@@ -160,14 +160,6 @@ export enum LEADERBOARD_PERIOD {
     DAILY = 'daily',
     WEEKLY = 'weekly',
     MONTHLY = 'monthly',
-}
-
-// How a leaderboard combines submitted scores, set in the developer console.
-export enum LEADERBOARD_SCORE_MODE {
-    // Keeps the best score.
-    BEST = 'best',
-    // Adds every submitted score: the game sends what the player earned.
-    SUM = 'sum',
 }
 
 export enum LAUNCH_SOURCE {
@@ -241,19 +233,6 @@ export interface LeaderboardEntry {
 export interface LeaderboardEntriesOptions {
     // Defaults to LEADERBOARD_PERIOD.PERMANENT.
     period?: LEADERBOARD_PERIOD;
-}
-
-export interface LeaderboardInfo {
-    id: string;
-    scoreMode: LEADERBOARD_SCORE_MODE;
-    // Standings getEntries() can read: all four on Playgama leaderboards, only permanent on native platform ones.
-    periods: LEADERBOARD_PERIOD[];
-    // Whole seconds until each period resets; a period the leaderboard does not have is absent.
-    timeLeft: {
-        daily?: number;
-        weekly?: number;
-        monthly?: number;
-    };
 }
 
 export interface CatalogProduct {
@@ -442,14 +421,12 @@ export interface DeviceModule extends EventEmitter {
 export interface LeaderboardsModule {
     type: LEADERBOARD_TYPE;
 
-    // On a LEADERBOARD_SCORE_MODE.SUM leaderboard the score is added to the player's total, so send what was earned.
+    // On a leaderboard set to "sum" in the developer console the score is added to the player's total,
+    // so send what was earned.
     setScore(id: string, score: number): Promise<any>;
 
     // Rejects for a period the leaderboard does not have.
     getEntries(id: string, options?: LeaderboardEntriesOptions): Promise<LeaderboardEntry[]>;
-
-    // Score mode, readable periods and time left per period; rejects when leaderboards are not available.
-    getInfo(id: string): Promise<LeaderboardInfo>;
 
     showNativePopup(id: string): Promise<any>;
 }
