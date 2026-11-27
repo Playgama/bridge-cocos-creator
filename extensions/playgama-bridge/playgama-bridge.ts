@@ -152,13 +152,22 @@ export enum LEADERBOARD_TYPE {
     NATIVE_POPUP = 'native_popup',
 }
 
-// Reset period of a leaderboard. Daily, weekly and monthly exist only for Playgama leaderboards
-// and reset at 00:00 UTC (weekly on Monday, monthly on the 1st); native platform leaderboards are permanent.
+// Standings a leaderboard read returns. Every Playgama leaderboard keeps all of them from the same scores;
+// daily, weekly and monthly reset at 00:00 UTC (weekly on Monday, monthly on the 1st).
+// Native platform leaderboards only have permanent.
 export enum LEADERBOARD_PERIOD {
     PERMANENT = 'permanent',
     DAILY = 'daily',
     WEEKLY = 'weekly',
     MONTHLY = 'monthly',
+}
+
+// How a leaderboard combines submitted scores, set in the developer console.
+export enum LEADERBOARD_SCORE_MODE {
+    // Keeps the best score.
+    BEST = 'best',
+    // Adds every submitted score: the game sends what the player earned.
+    SUM = 'sum',
 }
 
 export enum LAUNCH_SOURCE {
@@ -229,11 +238,22 @@ export interface LeaderboardEntry {
     photo: string | null;
 }
 
+export interface LeaderboardEntriesOptions {
+    // Defaults to LEADERBOARD_PERIOD.PERMANENT.
+    period?: LEADERBOARD_PERIOD;
+}
+
 export interface LeaderboardInfo {
     id: string;
-    period: LEADERBOARD_PERIOD;
-    // Whole seconds until the current period resets, null for permanent leaderboards.
-    timeLeft: number | null;
+    scoreMode: LEADERBOARD_SCORE_MODE;
+    // Standings getEntries() can read: all four on Playgama leaderboards, only permanent on native platform ones.
+    periods: LEADERBOARD_PERIOD[];
+    // Whole seconds until each period resets; a period the leaderboard does not have is absent.
+    timeLeft: {
+        daily?: number;
+        weekly?: number;
+        monthly?: number;
+    };
 }
 
 export interface CatalogProduct {
@@ -422,11 +442,13 @@ export interface DeviceModule extends EventEmitter {
 export interface LeaderboardsModule {
     type: LEADERBOARD_TYPE;
 
+    // On a LEADERBOARD_SCORE_MODE.SUM leaderboard the score is added to the player's total, so send what was earned.
     setScore(id: string, score: number): Promise<any>;
 
-    getEntries(id: string): Promise<LeaderboardEntry[]>;
+    // Rejects for a period the leaderboard does not have.
+    getEntries(id: string, options?: LeaderboardEntriesOptions): Promise<LeaderboardEntry[]>;
 
-    // Period and time left until the reset; rejects when leaderboards are not available.
+    // Score mode, readable periods and time left per period; rejects when leaderboards are not available.
     getInfo(id: string): Promise<LeaderboardInfo>;
 
     showNativePopup(id: string): Promise<any>;
